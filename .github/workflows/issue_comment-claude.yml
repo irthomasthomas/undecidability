@@ -6,7 +6,7 @@ on:
     
 jobs:
   auto-reply:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: github.event.label.name == 'run_1'
     
     permissions:
@@ -14,7 +14,7 @@ jobs:
       
     steps:
       - name: Run Script
-        run: echo "Hello world" | tee script-output.txt
+        run: echo "$(uname -a)" | tee script-output.txt
         
       - name: Post Comment
         uses: actions/github-script@v3.1.0

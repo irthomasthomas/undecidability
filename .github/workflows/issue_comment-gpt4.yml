@@ -1,0 +1,41 @@
+name: Run Script
+on:
+   issues:
+    types: [opened, labeled]
+
+jobs:
+  auto-reply:
+    if: github.event.label.name == 'run_1'
+    runs-on: ubuntu-latest
+    permissions:
+        issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Setup GitHub CLI
+        uses: cli/setup-gh@v1
+
+      - name: Run Script
+        id: script
+        run: |
+          try {
+            output=$(./script.sh)
+            echo "::set-output name=result::$output"
+           } catch {
+           echo "The script failed to run"
+           output="An error has occurred while running the script."
+           }
+
+      - name: Post Comment
+        id: comment
+        uses: actions/github-script@v3.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue_number = context.issue.number;
+            const comments = await github.issues.listComments({...context.repo, issue_number});
+            const bot_comment_exists = comments.data.some(comment => comment.user.login === 'github-actions[bot]' && comment.body.includes('Your output text here'));
+            if (!bot_comment_exists) {
+              await github.issues.createComment({...context.repo, issue_number, body: '${{steps.script.outputs.result}}'});
+            }

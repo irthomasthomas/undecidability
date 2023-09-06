@@ -3,26 +3,24 @@ name: Run Script
 on: 
   issues:
     types: [opened, labeled]
-
+    
 jobs:
-
   auto-reply:
-  
+    runs-on: ubuntu-latest
     if: github.event.label.name == 'run_1'
     
-    runs-on: ubuntu-latest
-
     permissions:
       issues: write
-    
+      
     steps:
-    
       - name: Run Script
         run: echo "Hello world" | tee script-output.txt
         
       - name: Post Comment
         uses: actions/github-script@v3.1.0
-        script: |
-          const issue_number = context.issue.number;
-          const scriptOutput = readFileSync('script-output.txt', 'utf8').trim();
-          await github.issues.createComment({...context.repo, issue_number, body: scriptOutput});
+        with:
+          script: |
+            const fs = require('fs');
+            const issue_number = context.issue.number;
+            const scriptOutput = fs.readFileSync('script-output.txt', 'utf8').trim();
+            github.issues.createComment({...context.repo, issue_number, body: scriptOutput});

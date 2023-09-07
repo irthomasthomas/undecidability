@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: irthomasthomas/undecidability
-          repo-token: ${{ secrets.GITHUB_TOKEN }} # Should be a newly generated GitHub token with repo scope
+          token: ${{ secrets.GITHUB_TOKEN }} # Should be a newly generated GitHub token with repo scope
 
       - name: Run bash script
         run: bash ${GITHUB_WORKSPACE}/github-actions/sync_changed_file.sh

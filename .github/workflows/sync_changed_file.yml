@@ -1,0 +1,19 @@
+name: Monitor and Copy File
+
+on: 
+  schedule:
+    - cron: '* * * * *' # Trigger the workflow every hour
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          repository: irthomasthomas/undecidability
+          repo-token: ${{ secrets.GITHUB_TOKEN }} # Should be a newly generated GitHub token with repo scope
+
+      - name: Run bash script
+        run: bash ${GITHUB_WORKSPACE}/github-actions/sync_changed_file.sh

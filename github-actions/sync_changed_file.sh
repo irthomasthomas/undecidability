@@ -38,7 +38,7 @@ if [[ $(echo "$response" | jq -r "length") -gt 0 ]]; then
     # Commit and push the changes to your own repository
     git config --local user.email "action@github.com"
     git config --local user.name "GitHub Action"
-    git add "$file_path"
+    echo $(git add "$file_path")
     git commit -m "Update $file_path via GitHub Action"
     git push
 

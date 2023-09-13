@@ -2,7 +2,7 @@ name: Monitor and Copy File
 
 on: 
   schedule:
-    - cron: '* * * * *' # Trigger the workflow every hour
+    - cron: '11 03 * * *' # Trigger the workflow every hour
 
 jobs:
   build:

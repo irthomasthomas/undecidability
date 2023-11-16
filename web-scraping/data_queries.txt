@@ -1,0 +1,16 @@
+"meta", {"property": "article:published_time"}
+"meta", {"name": "date"}
+"meta", {"name": "pubdate"}
+"time", {"class": "published"}
+"time", {"class": "entry-date"}
+"time", {"class": "post-date"}
+"time", {"class": "published"}
+"time", {"class": "entry-date"}
+"time", {"class": "post-date"}
+"time", {"class": "published"}
+"time", {"class": "entry-date"}
+"time", {"class": "post-date"}
+"time", {"class": "published"}
+"time", {"class": "entry-date"}
+"time", {"class": "post-date"}
+"time", {"class": "review-date"}

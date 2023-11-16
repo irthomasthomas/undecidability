@@ -1,14 +1,6 @@
 #!/bin/bash
 
-send_note_to_github() {
-    echo "Send Note To Github"
-    target_project="undecidability"
-    target_directory="$HOME/$target_project"
-
-    pipe_title="/tmp/nyxt_title"
-    pipe_url="/tmp/nyxt_url"
-    pipe_selection="/tmp/nyxt_selection"
-
+create_pipes() {
     # Create named pipes if they don't exist
     if [ ! -p "$pipe_title" ]; then
         mkfifo "$pipe_title" && echo "Created named pipe: $pipe_title"
@@ -24,8 +16,20 @@ send_note_to_github() {
 
     if [ ! -d "$target_directory" ]; then
         echo "Cannot find directory $target_directory"
-        return 1
+        exit 1
     fi
+}
+
+send_note_to_github() {
+    echo "Send Note To Github"
+    target_project="undecidability"
+    target_directory="$HOME/$target_project"
+
+    pipe_title="/tmp/nyxt_title"
+    pipe_url="/tmp/nyxt_url"
+    pipe_selection="/tmp/nyxt_selection"
+
+    create_pipes
 
     cd "$target_directory" || return 2
     echo "$PWD"

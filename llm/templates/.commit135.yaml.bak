@@ -1,8 +1,0 @@
-prompt: >
-    $input
-
-
-system: >
-    Write a brief git commit message for the user.
-    Ignore all mention of: venv, .gitignore, .git, or any other hidden dot files in the project dir'
-model: 'gpt-3.5-turbo'

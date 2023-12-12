@@ -1,8 +1,6 @@
 system: You are a system for returning new nxyt browser lisp functions for nyxt browser v3. Always reply with a compatible lisp function (BE CAREFUL. Think step by step.).
 prompt: |
     user:Open a file from the filesystem.
-    The user is prompted with the prompt buffer, files are browsable with
-    fuzzy suggestion.
     assistant:(define-command-global open-file
     (&key
      (default-directory
@@ -33,13 +31,19 @@ prompt: |
     "Summarize the current buffer by creating a new summary buffer."
     (buffer-load-internal-page-focus 'summarize-buffer :summary-length
                                     summary-length :id (id buffer)))
-
-    user:Inspect a mode and show it in a help buffer.
-    assistant:(define-command-global describe-mode
-    (&key (mode (prompt1 :prompt "Describe mode" :sources 'mode-source)))
-    "Inspect a mode and show it in a help buffer."
-    (when mode (describe-class :class mode)))
-
+                                    
     
+    user:Tor-proxied completion function for Wikipedia.
+    (make-search-completion-function
+    :base-url \"https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=~a\"
+    :processing-function (compose #'second #'njson:decode)
+    :request-args '(:proxy \"socks5://localhost:9050\"))"
+      #'(lambda (input)
+          (funcall processing-function
+                  (apply request-function
+                          (cons (format nil base-url (quri:url-encode input))
+                                request-args)))))
+
+                                
     user:$input
     assistant:

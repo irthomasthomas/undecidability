@@ -1,6 +1,5 @@
 prompt: |
     Reply with bash script only. Use inline code comments for writing.
-    Think through through step-by-step.
     Think quietly about tools, algorithms, Probabilistic data-structures, cli bash tools like awk and grep, inodes and dbuses qdbuses.
 
     $input

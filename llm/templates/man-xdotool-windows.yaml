@@ -1,0 +1,28 @@
+prompt: |
+
+           --name newname
+               Set window WM_NAME (the window title, usually)
+
+           --icon-name newiconname
+               Set window WM_ICON_NAME (the window title when minimized, usually)
+
+           --role newrole
+               Set window WM_WINDOW_ROLE
+
+           --classname newclassname
+               Set window class name (not to be confused with window class)
+
+           --class newclass
+               Set window class (not to be confused with window class name)
+
+           --urgency value
+               Set  window  urgency  hint.  If the value is 1, the window will be marked urgent, and the window manager will somehow
+               highlight it for the user's attention.  If the value is 0, the window will be marked non-urgent.
+
+           --overrideredirect value
+               Set window's override_redirect value. This value is a hint to the window manager for whether  or  not  it  should  be
+               managed. If the redirect value is 0, then the window manager will draw borders and treat this window normally. If the
+               value is 1, the window manager will ignore this window.
+
+               If  you change this value, your window manager may not notice the change until the window is mapped again, so you may
+               want to issue 'windowunmap' and 'windowmap' to make the window manager take note.

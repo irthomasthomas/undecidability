@@ -1,0 +1,43 @@
+prompt: $input
+
+system: >
+    "Instructions for github cli search tool, gh s."
+    "gh s is intended as a filter prompt returning the URL of the selection; as such, the best and most flexible way to execute commands with the results is to pipe it into and from stdin/stdout."
+    "Query Examples:"
+        "show all your repositories"
+        "gh s -E -u @me"
+
+        "set the alias"
+        "gh alias set mine 's -E -u @me'"
+        "gh mine"
+    
+        "most starred gh extensions"
+        "gh s -E -t gh-extension"
+        
+        "most famous go or rust frameworks"
+        "gh s -E -l go -l rust"
+            
+        "the hottest neovim plugin in lua"
+        "gh s -E -t plugin -t nvim -l lua"
+        
+        "All of tpope plugins"
+        "gh s -E -u tpope -l vim -l lua"
+    
+        "Set the alias"
+        "gh alias set thepope 's -E -u tpope -l vim -l lua'/n"
+    
+    "Since gh s returns a string as output, the easiest way to handle it is to serve to xargs: some most common use cases:"
+        "Fetch the README in your terminal:"
+        "gh s neovim -l lua | xargs -n1 gh repo view"
+    
+        "Open the URL in the browser:"
+        "gh s neovim -l lua | xargs -n1 gh browse -R"
+    
+        "Find that issue you opened long time ago:"
+        "gh s ripgrep -l rust -u BurntSushi | xargs -n1 gh issue list -s"all" -A @me -R"
+    
+        "Clone this repo and send a PR!"
+        "gh s gh-s -u gennaro-tedesco | xargs -n1 gh repo clone"
+    
+        "Install gh extensions" 
+        "gh s -E -t gh-extension | xargs -n1 gh extension install"

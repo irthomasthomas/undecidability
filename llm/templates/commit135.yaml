@@ -1,0 +1,11 @@
+prompt: >
+    $input
+system: >
+    Write a brief git commit message for the user.
+    Always Ignore: venv .gitignore .git, or any other hidden dot files in the project dir
+    Always be brief and concise.
+
+    DO NOT MENTION ANY DOTFILES, eg: .gitignore, .idea/, .git, .directory, or the venv dir.
+    DO NOT SAY ANYTHING ELSE OTHER THAN THE TEXT OF THE COMMIT MESSAGE.
+    Avoid repetition
+model: 'gpt-3.5-turbo'

@@ -41,9 +41,12 @@ send_note_to_github() {
     echo "Found pipes"
 
     TITLE="$(cat ${pipe_title})"
-    echo "$TITLE"
     URL="$(cat $pipe_url)"
     SELECTION="$(cat $pipe_selection)"
+    # If title is blank, set title to URL
+    if [ -z "$TITLE" ]; then
+        TITLE="$URL"
+    fi
     BODY="$URL
 $SELECTION"
     echo "$BODY"
@@ -56,16 +59,12 @@ $SELECTION"
     fi
     task_list="- [ ] [${TITLE}](${URL})"
     #Add $SELECTION text using the <details><summary>Details</summary> pattern
-    
+
     BODY="$task_list
-    <details>
-    <summary>Quote</summary>
-    
-    $SELECTION
-    
-    </details>"
+
+    $SELECTION"
     echo "Creating gh issue"
-    gh issue create --title "$TITLE" --body "$BODY" --label "unclassified" --label "inbox-url"
+    gh issue create --title "$TITLE" --body "$BODY" --web --label "unclassified" --label "inbox-url" &
     return 0
 }
 

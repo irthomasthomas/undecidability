@@ -1,0 +1,6 @@
+prompt: >
+ Make a test-driven programming tutorial. 
+ Tutorial should result in a complete, working software tool with good test coverage. 
+ Totorial sould have checkpoints, where the code can be tested.
+ At each checkpoint, the user will be tested on what they have learned, with small programming quizes that can be automatically checked.
+ The subject of this tutorial is $input.

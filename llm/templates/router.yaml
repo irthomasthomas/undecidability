@@ -1,0 +1,16 @@
+prompt:
+    # First layer of classification and routing.
+    # Think of how to divide requests between experts.
+    # What categories.
+    # Manjaro and Arch Linux
+    # X and Linux GUI stuff
+    # KDE Plasma
+    # Bash, ZSH, Posix
+    # Python
+    # Py ML / pytorch/vision
+    # Web frontend
+    # Databases
+    # Github
+    # lisp
+    # Probabilistic datastructures
+    

@@ -1,0 +1,4 @@
+prompt: |
+    Breakdown this code line-by-line and characterize any performance issues. Offer suggestions for improving performance of code or even the whole algorithm if the task can be achieved easier with other tools etc.
+
+    CODE: $input

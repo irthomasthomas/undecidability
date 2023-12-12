@@ -1,0 +1,4 @@
+prompt: > 
+    Quickly, what is the exact bash command to $input?
+    
+    Reply only with the exact command text and nothing else before or after.

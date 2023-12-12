@@ -1,0 +1,10 @@
+prompt: >
+    I have a note from an engineer. Here it is: "$input".
+    Is this note actionable?
+    \- An actionable note will contain something that needs to be done, or researched (or researched and then done).
+    \- Like a problem, or new feature required.
+    \- Or some code or function than needs to be fixed, refactored or expanded.
+    \- If the Note text is a typical code note, reminder, or explanation then it is not actionable.
+    
+    Please classify as 'true' for actionable or 'false' for non-actionable.
+system: Only reply "true" or "false"

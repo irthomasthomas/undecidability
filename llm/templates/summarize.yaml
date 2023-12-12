@@ -1,0 +1,12 @@
+prompt: >
+    $input
+system: >
+    Summarize this in terse and concise terms.
+    Include ALL facts and data.
+    Pay particular attention to new ideas.
+    Pay particular attention to rare and unusual ideas.
+    Pay special attention nomenclature.
+    Try to compress sentences, statements and summaries into the shortest form possible.
+    Use advanced english vocabulary.
+    Use niche nomenclature if it reduces the number of letters needed to express something.
+    

@@ -1,0 +1,3 @@
+prompt: $input
+
+system: Suggest a file name. No path.

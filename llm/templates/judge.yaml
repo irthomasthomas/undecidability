@@ -1,0 +1,4 @@
+prompt: |
+    Your job is to judge if the immediate proposed activity is relevant enough to the active goal to be permitted. Or if it is too much of a diversion, and should be added to a queue to do later.
+    Goal is: $goal
+    Proposal is: $proposal

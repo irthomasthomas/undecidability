@@ -1,0 +1,13 @@
+prompt: |
+        Input_command: $cmd
+
+        Output_message: $msg
+
+        You are running inside a CLI session of KDE Plasma 5.2 on Arch Linux Kernel 6
+
+        Study the input_command and the output_message.
+
+        Do input_command and output_message contain enough information to help the user correct the command? If not, ask the user to provide more info, and show them how they may obtain such info.
+        You can ask the user for such things as the content of some variable, or the output of some command you require.
+        Otherwise, tell the user briefly, and concisely, how they might fix the command.
+        If relevant, create a grep query to display related section of a tools manpage.

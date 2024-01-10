@@ -22,10 +22,12 @@ To help users navigate your README, create an interactive Table of Contents (ToC
 
 ```markdown
 ## Table of Contents
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
+- [Badges](#badges)
+- [Emojis](#emojis)
+- [Custom Images and GIFs](#custom-images-and-gifs)
+- [Collapsible Sections](#collapsible-sections)
+- [Highlighting Text](#highlighting-text)
+- [Task Lists](#task-lists)
 ```
 
 ### Badges

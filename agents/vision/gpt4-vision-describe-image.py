@@ -67,7 +67,8 @@ def get_image_description(image, prompt=None):
             ],
             max_tokens=2000,
         )
-        return response.choices[0] if response.choices else "No description found."
+        result = response.choices[0].message.content
+        print(f"{result}")
     except Exception as e:
         logging.error(e)
         return "Error: " + str(e)

@@ -7,14 +7,19 @@ import base64
 from PIL import Image
 from openai import OpenAI
 
+# Define some global variables so I can use them in the functions below
+STREAM = False
 devtty = "/dev/tty"
 if os.path.exists(devtty):
-    logging.basicConfig(filename=devtty, level=logging.DEBUG)
+    logging.basicConfig(filename=devtty, level=logging.ERROR)
 
 # Client instantiation, moved from individual functions to reduce duplication
 client = OpenAI()
 
 def openai_completion(prompt, system_prompt, max_tokens=2000, model='gpt-4-vision-preview', base64_image=None):
+    """Generate a completion from OpenAI's API."""
+    
+    #Todo: refactor to use streaming completion.
     response = client.chat.completions.create(
         model=model,
         messages=[
@@ -35,9 +40,19 @@ def openai_completion(prompt, system_prompt, max_tokens=2000, model='gpt-4-visio
             },
         ],
         max_tokens=max_tokens,
+        stream=STREAM,
     )
-    result = response.choices[0].message.content
-    return result
+    if not STREAM:
+        result = response.choices[0].message.content
+        return result
+    else:
+        for chunk in response:
+            if len(chunk.choices) > 0:
+                delta = chunk.choices[0].delta
+                if delta.role:
+                    print(delta.role + ": ", end="", flush=True)
+                if delta.content:
+                    print(delta.content, end="", flush=True)
 
 def convert_image_to_base64(image):
     buffered = io.BytesIO()
@@ -63,11 +78,16 @@ def generate_output(image, prompt, output_type):
 def cli():
     pass
 
+# add a streaming option.
 @cli.command()
 @click.argument('image_path', type=click.Path(exists=True), required=False)
 @click.argument('prompt', required=False)
 @click.option('--output', type=click.Choice(['text', 'json', 'md'], case_sensitive=False), default='describe')
-def describe(image_path, prompt, output):
+@click.option('--stream', is_flag=True, default=False) # use this like: cat image.png | python3 GPT4-vision-toolkit.py --stream
+def describe(image_path, prompt, output, stream):
+    """Describe an image."""
+    global STREAM # I'm sure there's a better way to do this, but I'm not sure what it is. < copilot generated this comment for me.
+    STREAM = stream
     if not image_path:
         if sys.stdin.isatty():
             raise click.UsageError("No image provided. You must provide an image path or pipe in an image.")

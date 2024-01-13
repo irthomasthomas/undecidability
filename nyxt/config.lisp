@@ -1,30 +1,22 @@
-(define-command-global pipe-selection ()
-    "Send selection to named pipe"
-  (let ((selection (ps-eval (ps:chain window (get-selection) (to-string)))))
-    (uiop:launch-program (list "sh" "-c" (concatenate 'string "echo " "'" selection "'" " > /tmp/nyxt_selection_pipe")))))
+(in-package #:nyxt-user)
 
+;;; Loading files from the same directory.
+(define-nyxt-user-system-and-load nyxt-user/basic-config
+  :components ("gh-selection-to-issue"))
 
+(defvar *my-search-engines*
+(list
+  '("google" "https://google.com/search?q=~a" "https://google.com")
+  '("doi" "https://dx.doi.org/~a" "https://dx.doi.org/")
+  '("python3" "https://docs.python.org/3/search.html?q=~a"
+    "https://docs.python.org/3")
+  '("google" "https://kagi.com/search?q=~a" "https://kagi.com"))
+"List of search engines.")
 
-(define-command-global pipe-selection-title-url-new ()
-    "Sends url, title and selection to new gh issue"
-  (let* ((title (title (current-buffer)))
-         (myurl (url (current-buffer)))
-         (selection (ps-eval (ps:chain window (get-selection) (to-string))))
-         (pipe-title "/tmp/nyxt_title")
-         (pipe-url "/tmp/nyxt_url")
-         (pipe-selection "/tmp/nyxt_selection"))
-    (with-open-file (stream pipe-title
-                           :direction :output
-                           :if-exists :supersede
-                           :if-does-not-exist :create)
-      (write-string title stream))
-    (with-open-file (stream pipe-url
-                           :direction :output
-                           :if-exists :supersede
-                           :if-does-not-exist :create)
-      (write-string (render-url myurl) stream))
-    (with-open-file (stream pipe-selection
-                           :direction :output
-                           :if-exists :supersede
-                           :if-does-not-exist :create)
-      (write-string selection stream))))
+(define-configuration context-buffer
+"Go through the search engines above and `make-search-engine' out of them."
+((search-engines
+  (append %slot-default%
+          (mapcar
+            (lambda (engine) (apply 'make-search-engine engine))
+            *my-search-engines*)))))

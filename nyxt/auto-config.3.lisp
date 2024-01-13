@@ -1,6 +1,3 @@
-(defmethod customize-instance ((document-buffer document-buffer) &key)
-  (setf (slot-value document-buffer 'zoom-ratio-default) 1.1))
-
 (defmethod customize-instance ((buffer buffer) &key)
   (setf (slot-value buffer 'default-modes)
           '(nyxt/mode/certificate-exception:certificate-exception-mode
@@ -20,3 +17,4 @@
 
 (defmethod customize-instance ((browser browser) &key)
   (setf (slot-value browser 'remote-execution-p) t))
+

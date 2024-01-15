@@ -8,7 +8,7 @@ from PIL import Image
 from openai import OpenAI
 
 # Define some global variables so I can use them in the functions below
-STREAM = False
+STREAM = True
 devtty = "/dev/tty"
 if os.path.exists(devtty):
     logging.basicConfig(filename=devtty, level=logging.ERROR)
@@ -83,7 +83,7 @@ def cli():
 @click.argument('image_path', type=click.Path(exists=True), required=False)
 @click.argument('prompt', required=False)
 @click.option('--output', type=click.Choice(['text', 'json', 'md'], case_sensitive=False), default='describe')
-@click.option('--stream', is_flag=True, default=False) # use this like: cat image.png | python3 GPT4-vision-toolkit.py --stream
+@click.option('--stream', is_flag=True, default=True)
 def describe(image_path, prompt, output, stream):
     """Describe an image."""
     global STREAM # I'm sure there's a better way to do this, but I'm not sure what it is. < copilot generated this comment for me.

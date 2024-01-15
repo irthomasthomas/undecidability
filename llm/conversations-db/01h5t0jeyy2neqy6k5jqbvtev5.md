@@ -1,0 +1,72 @@
+**Prompt:**
+Quickly, what is the exact bash command to open the app mentioned in this file: [Desktop Entry]
+Name=KTimeTracker
+Name[ca]=KTimeTracker
+Name[ca@valencia]=KTimeTracker
+Name[cs]=KTimeTracker
+Name[de]=KTimeTracker
+Name[en_GB]=KTimeTracker
+Name[es]=KTimeTracker
+Name[et]=KTimeTracker
+Name[fr]=KTimeTracker
+Name[gl]=KTimeTracker
+Name[it]=KTimeTracker
+Name[ko]=KTimeTracker
+Name[nl]=KTimeTracker
+Name[pl]=Pomiar czasu KDE
+Name[pt]=KTimeTracker
+Name[pt_BR]=KTimeTracker
+Name[ru]=KTimeTracker
+Name[sk]=KTimeTracker
+Name[sv]=KTimeTracker
+Name[uk]=KTimeTracker
+Name[x-test]=xxKTimeTrackerxx
+Name[zh_TW]=KTimeTracker
+GenericName=Personal Time Tracker
+GenericName[ca]=Seguidor personal del temps
+GenericName[ca@valencia]=Seguidor personal del temps
+GenericName[cs]=Osobní sledovač času
+GenericName[de]=Persönliche Zeiterfassung
+GenericName[en_GB]=Personal Time Tracker
+GenericName[es]=Seguimiento del tiempo personal
+GenericName[et]=Isikliku aja arvestamine
+GenericName[fr]=Outil de gestion du temps personnel
+GenericName[gl]=Seguimento do tempo persoal
+GenericName[it]=Segnatempo personale
+GenericName[ko]=개인 시간 추적기
+GenericName[nl]=Persoonlijk gebruik van tijd
+GenericName[pl]=Osobisty czasomierz
+GenericName[pt]=Gestor do Tempo Pessoal
+GenericName[pt_BR]=Gerenciador de tempo pessoal
+GenericName[ru]=Учёт времени
+GenericName[sk]=Osobný sledovač času
+GenericName[sv]=Personlig tidmätning
+GenericName[uk]=Програма для керування особистим часом
+GenericName[x-test]=xxPersonal Time Trackerxx
+GenericName[zh_TW]=個人時間追蹤器
+Exec=ktimetracker
+Icon=ktimetracker
+X-DocPath=ktimetracker/index.html
+Type=Application
+Terminal=false
+X-KDE-StartupNotify=true
+X-DBUS-StartupType=Unique
+Categories=Qt;KDE;Utility;Office;Monitor;X-KDE-Utilities-PIM;?
+Reply only with the exact command text and nothing else before or after.
+
+**Response:**
+ktimetracker
+
+<details><summary>Metadata</summary>
+
+- Duration: 685 ms
+- Datetime: 2023-07-20T16:01:48.849000
+- Model: gpt-3.5-turbo-0613
+
+</details>
+
+**Options:**
+```json
+{}
+```
+

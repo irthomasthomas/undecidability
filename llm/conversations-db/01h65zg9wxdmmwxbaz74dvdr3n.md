@@ -1,0 +1,47 @@
+**Prompt:**
+DO NOT USE MARKDOWN.
+Reply only with the text of the bash script and nothing else. Use inline code comments if you need to say anything else.
+Think it through step-by-step.
+Requirements (If the line is blank after this, then the user input failed. Tell the user that they did not provide any input.): For each .desktop file in the path provided, launch each one and check to make sure it opened properly or errored. Log the result.
+Additional Goals:
+  - Minimise IF statements and branching.
+  - Write intelligent, self-documenting code.
+  - Minimise duplication. Minimise Verbosity.
+  - Write code that is modern, clean and fast.
+
+WARNING: Do not include a markdown code block.
+Beware of bugs and tricky syntax. SAY NOTHING ELSE!
+
+
+**Response:**
+#!/bin/bash
+
+# Check if the user provided a path
+if [ -z "$1" ]; then
+  echo "No path provided."
+  exit 1
+fi
+
+# Loop through each .desktop file in the provided path
+for file in "$1"/*.desktop; do
+  # Launch the .desktop file and log the result
+  if ! xdg-open "$file" &> /dev/null; then
+    echo "Error opening $file"
+  else
+    echo "$file opened successfully"
+  fi
+done
+
+<details><summary>Metadata</summary>
+
+- Duration: 4346 ms
+- Datetime: 2023-07-25T07:33:59.074922
+- Model: gpt-3.5-turbo-0613
+
+</details>
+
+**Options:**
+```json
+{"temperature": 0.2}
+```
+

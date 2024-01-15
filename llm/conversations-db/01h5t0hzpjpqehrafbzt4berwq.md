@@ -1,0 +1,50 @@
+**Prompt:**
+Quickly, what is the exact bash command to open the app mentioned in this file: [Desktop Action new-private-window]
+Exec=brave --incognito
+MimeType=x-scheme-handler/unknown;x-scheme-handler/about;text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/http;x-scheme-handler/https;
+Name=New Incognito Window
+
+[Desktop Action new-window]
+Exec=brave --profile-directory="$(qdbus org.kde.ActivityManager /ActivityManager/Activities org.kde.ActivityManager.Activities.ActivityName "$(qdbus org.kde.ActivityManager /ActivityManager/Activities CurrentActivity)")"
+Name=New Window
+
+[Desktop Entry]
+Actions=new-window;new-private-window;
+Categories=Network;WebBrowser;
+Comment[en_GB]=Access the Internet
+Comment=Access the Internet
+Exec=brave --profile-directory="$(qdbus org.kde.ActivityManager /ActivityManager/Activities org.kde.ActivityManager.Activities.ActivityName "$(qdbus org.kde.ActivityManager /ActivityManager/Activities CurrentActivity)")" %U
+GenericName[en_GB]=Web Browser
+GenericName=Web Browser
+Icon=brave-desktop
+MimeType=text/html;image/webp;image/png;image/jpeg;image/gif;application/xml;application/xml;application/xhtml+xml;application/rss+xml;application/rdf+xml;application/pdf;
+Name[en_GB]=Brave
+Name=Brave
+Path=
+StartupNotify=true
+StartupWMClass=brave-browser
+Terminal=false
+TerminalOptions=
+TryExec=brave
+Type=Application
+Version=1.0
+X-KDE-SubstituteUID=false
+X-KDE-Username=?
+Reply only with the exact command text and nothing else before or after.
+
+**Response:**
+brave --incognito
+
+<details><summary>Metadata</summary>
+
+- Duration: 539 ms
+- Datetime: 2023-07-20T16:01:33.366547
+- Model: gpt-3.5-turbo-0613
+
+</details>
+
+**Options:**
+```json
+{}
+```
+

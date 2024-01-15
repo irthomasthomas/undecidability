@@ -1,0 +1,118 @@
+**Prompt:**
+Write a perfect commit message for: diff --git a/.gitignore b/.gitignore
+index 854c596..7da2553 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,7 @@
++*.bak
++.idea
++.idea/
++.idea*
+ .bak
+ # Byte-compiled / optimized / DLL files
+ __pycache__/
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+index bf5449a..94e7570 100644
+--- a/.idea/workspace.xml
++++ b/.idea/workspace.xml
+@@ -4,7 +4,12 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="8af50231-0cb3-4ef9-9ec2-5d8c8b56c2b1" name="Changes" comment="" />
++    <list default="true" id="8af50231-0cb3-4ef9-9ec2-5d8c8b56c2b1" name="Changes" comment="">
++      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Scripts/OPEN_QnA.sh" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/Scripts/control_slideshow.sh" beforeDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -29,12 +34,14 @@
+     "RunOnceActivity.OpenProjectViewOnStart": "true",
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "WebServerToolWindowFactoryState": "false",
++    "git-widget-placeholder": "main",
+     "last_opened_file_path": "/home/thomas/Development/Projects/StreamDeck",
+     "node.js.detected.package.eslint": "true",
+     "node.js.detected.package.tslint": "true",
+     "node.js.selected.package.eslint": "(autodetect)",
+     "node.js.selected.package.tslint": "(autodetect)",
+-    "settings.editor.selected.configurable": "preferences.keymap",
++    "nodejs_package_manager_path": "npm",
++    "settings.editor.selected.configurable": "preferences.editor",
+     "vue.rearranger.settings.migration": "true"
+   }
+ }]]></component>
+@@ -74,7 +81,11 @@
+       <option name="number" value="Default" />
+       <option name="presentableId" value="Default" />
+       <updated>1685093533678</updated>
+-      <workItem from="1685109927546" duration="648000" />
++      <workItem from="1685109927546" duration="15476000" />
++      <workItem from="1685548649931" duration="75000" />
++      <workItem from="1685548729946" duration="599000" />
++      <workItem from="1685559021631" duration="2055000" />
++      <workItem from="1685639846713" duration="4960000" />
+     </task>
+     <servers />
+   </component>
+diff --git a/Scripts/OPEN_QnA.sh b/scripts/OPEN_QnA.sh
+similarity index 100%
+rename from Scripts/OPEN_QnA.sh
+rename to scripts/OPEN_QnA.sh
+diff --git a/Scripts/control_slideshow.sh b/scripts/control_slideshow.sh
+similarity index 64%
+rename from Scripts/control_slideshow.sh
+rename to scripts/control_slideshow.sh
+index 12d8148..1b75102 100755
+--- a/Scripts/control_slideshow.sh
++++ b/scripts/control_slideshow.sh
+@@ -6,19 +6,21 @@ function get_window_id() {
+   wmctrl -l -x | grep "$SEARCH_TERM" | awk '{print $1}'
+ }
+ 
+-sleep 0.5
++sleep 0.2
+ key_cmd="$1"
+-sleep 0.1
++sleep 0.2
+ wid=$(get_window_id "Slideshow")
+ xdotool key --window "$wid" space
+ sleep 0.1
+ xdotool windowactivate "$wid"
+-sleep 0.1
++sleep 0.2
+ # xdotool key --window "$wid" "$key_cmd"
+ # xdotool key "$key_cmd"
+ 
+-xdotool keydown ctrl
+-xdotool keydown $key_cmd
+-xdotool keyup $key_cmd
+-xdotool keyup ctrl
++xdotool keydown --window "$wid" ctrl
++xdotool keydown --window "$wid" $key_cmd
++xdotool keyup --window "$wid" $key_cmd
++xdotool keyup --window "$wid" ctrl
++xdotool key --window "$wid" Right
+ sleep 0.1
++
+. Always keep it concise and brief!
+
+**Response:**
+Update .gitignore and .idea/workspace.xml files, rename Scripts/OPEN_QnA.sh to scripts/OPEN_QnA.sh and Scripts/control_slideshow.sh to scripts/control_slideshow.sh
+
+<details><summary>Metadata</summary>
+
+- Duration: 1992 ms
+- Datetime: 2023-07-25T20:41:56.485823
+- Model: gpt-3.5-turbo-0613
+
+</details>
+
+**Options:**
+```json
+{"temperature": 0.2}
+```
+

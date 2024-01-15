@@ -1,3 +1,4 @@
+#!/bin/bash
 commit() {
     # Generate commit messages using llm and commit changes to git repo.
     # Usage: commit <commit message> # Manually enter commit message

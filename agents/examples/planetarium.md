@@ -32,6 +32,9 @@ As you reflect on this image, consider the long history of stargazing that has c
 <details>
     <summary>Prompt</summary>
 
-    This is a photo of the night sky in London 2023-01-14. Describe the photo of the constelations in great detail. Make a beutiful markdown document to illuminate the night for us. include this img path in an img tag:
+    This is a photo of the night sky in London 2023-01-14. 
+    Describe the photo of the constelations in great detail. 
+    Make a beutiful markdown document to illuminate the night for us. 
+    include this img path in an img tag:
 
 </details>

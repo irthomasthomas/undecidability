@@ -13,3 +13,5 @@ BUDGET: Set $ budgets for each agent. and track costs.
 AI Chatbot: Ask for assistance from an AI.
 
 gorilla LLM with API understanding and code generation for connecting to other APIs.
+
+- [ ] color tokens based on logprobs.

@@ -1,0 +1,128 @@
+[
+  {
+    "Name": "new_terminator",
+    "Action": "Spawn a new Terminator process",
+    "Keybinding": "Super+I"
+  },
+  {
+    "Name": "new_window",
+    "Action": "Create a new window",
+    "Keybinding": "Shift+Ctrl+I"
+  },
+  {
+    "Name": "next_tab",
+    "Action": "Switch to the next tab",
+    "Keybinding": "Ctrl+Page Down"
+  },
+  {
+    "Name": "paste_clipboard",
+    "Action": "Paste clipboard",
+    "Keybinding": "Shift+Ctrl+V"
+  },
+  {
+    "Name": "preferences_keybindings",
+    "Action": "Open the Preferences-Keybindings window",
+    "Keybinding": "Shift+Ctrl+K"
+  },
+  {
+    "Name": "prev_tab",
+    "Action": "Switch to the previous tab",
+    "Keybinding": "Ctrl+Page Up"
+  },
+  {
+    "Name": "reset",
+    "Action": "Reset the terminal",
+    "Keybinding": "Shift+Ctrl+R"
+  },
+  {
+    "Name": "reset_clear",
+    "Action": "Reset and clear the terminal",
+    "Keybinding": "Shift+Ctrl+G"
+  },
+  {
+    "Name": "resize_down",
+    "Action": "Resize the terminal down",
+    "Keybinding": "Shift+Ctrl+Down"
+  },
+  {
+    "Name": "resize_left",
+    "Action": "Resize the terminal left",
+    "Keybinding": "Shift+Ctrl+Left"
+  },
+  {
+    "Name": "resize_right",
+    "Action": "Resize the terminal right",
+    "Keybinding": "Shift+Ctrl+Right"
+  },
+  {
+    "Name": "resize_up",
+    "Action": "Resize the terminal up",
+    "Keybinding": "Shift+Ctrl+Up"
+  },
+  {
+    "Name": "rotate_ccw",
+    "Action": "Rotate terminals counter-clockwise",
+    "Keybinding": "Shift+Super+R"
+  },
+  {
+    "Name": "rotate_cw",
+    "Action": "Rotate terminals clockwise",
+    "Keybinding": "Super+R"
+  },
+  {
+    "Name": "scaled_zoom",
+    "Action": "Zoom terminal",
+    "Keybinding": "Shift+Ctrl+Z"
+  },
+  {
+    "Name": "search",
+    "Action": "Search terminal scrollback",
+    "Keybinding": "Shift+Ctrl+F"
+  },
+  {
+    "Name": "split_auto",
+    "Action": "Split automatically",
+    "Keybinding": "Shift+Ctrl+A"
+  },
+  {
+    "Name": "split_horiz",
+    "Action": "Split horizontally",
+    "Keybinding": "Shift+Ctrl+O"
+  },
+  {
+    "Name": "split_vert",
+    "Action": "Split vertically",
+    "Keybinding": "Shift+Ctrl+E"
+  },
+  {
+    "Name": "toggle_scrollbar",
+    "Action": "Show/Hide the scrollbar",
+    "Keybinding": "Shift+Ctrl+S"
+  },
+  {
+    "Name": "toggle_zoom",
+    "Action": "Maximise terminal",
+    "Keybinding": "Shift+Ctrl+X"
+  },
+  {
+    "Name": "ungroup_all",
+    "Action": "Ungroup all terminals",
+    "Keybinding": "Shift+Super+G"
+  },
+  {
+    "Name": "ungroup_tab",
+    "Action": "Ungroup terminals in tab",
+    "Keybinding": "Shift+Super+T"
+  },
+  {
+    "Name": "ungroup_win",
+    "Action": "Ungroup terminals in window",
+    "Keybinding": "Shift+Super+W"
+  },
+  {
+    "Name": "zoom_in",
+    "Action": "Increase font size",
+    "Keybinding": "Ctrl++"
+  }
+]
+

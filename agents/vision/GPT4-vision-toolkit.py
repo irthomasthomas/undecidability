@@ -84,6 +84,12 @@ def cli():
 @click.argument('prompt', required=False)
 @click.option('--output', type=click.Choice(['text', 'json', 'md'], case_sensitive=False), default='describe')
 @click.option('--stream', is_flag=True, default=False) # use this like: cat image.png | python3 GPT4-vision-toolkit.py --stream
+# Todo:
+    # add --screen, screenshot option.
+    # add --interval, --similarity-threshold options.
+    # add --monitor option.
+    # add --help option.
+
 def describe(image_path, prompt, output, stream):
     """Describe an image."""
     global STREAM # I'm sure there's a better way to do this, but I'm not sure what it is. < copilot generated this comment for me.

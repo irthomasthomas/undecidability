@@ -1,0 +1,17 @@
+
+```sql
+sqlite3 :memory: "SELECT number, title, body, body_url, author_login, created_at, updated_at, labels_src, labels FROM github_issue WHERE repository_full_name = 'irthomasthomas/undecidability';"
+```
+
+```sql
+sqlite3 :memory: "ATTACH DATABASE '/home/thomas/steampipe/github-issues.db' AS db2; INSERT INTO db2.github_issues SELECT number, title, body, body_url, author_login, created_at, updated_at, labels_src, labels FROM github_issue WHERE repository_full_name = 'irthomasthomas/undecidability';"
+```
+
+```shell
+llm embed-multi gh-issues \
+-d github-issues.db \
+--sql 'SELECT number, title, body FROM github_issues' \
+-m jina-embeddings-v2-base-en \
+--batch-size 7 \
+--store
+```

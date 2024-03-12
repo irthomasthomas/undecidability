@@ -15,3 +15,8 @@ llm embed-multi gh-issues \
 --batch-size 7 \
 --store
 ```
+
+```shell
+llm similar -d github-issues.db gh-issues -c "https://github.com/datastax/astra-assistants-api\nA backend implementation of the OpenAI beta Assistants API" -n 2
+```
+

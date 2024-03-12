@@ -2,7 +2,7 @@
 
 ;;; Loading files from the same directory.
 (define-nyxt-user-system-and-load nyxt-user/basic-config
-  :components ("gh-selection-to-issue" "buf-text-to-pipe-cmd"))
+  :components ("nyxt-browser-gh-issues-plugin"))
 
 (defvar *my-search-engines*
 (list

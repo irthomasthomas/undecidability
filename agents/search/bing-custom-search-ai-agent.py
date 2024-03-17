@@ -48,52 +48,48 @@ In your answers, provide context, and consult relevant sources you found during 
 
 browser_tools = [
     {
-  "type": "function",
-  "function": {
-    "name": "webBrowser",
-    "description": "Search the internet with bing search. Interact and navigate webpages, including bing_search, click, quote_lines, back scroll, and open_url.",
-    "parameters": {
-      "type": "object",
-      "properties": {
-        "action": {
-          "type": "string",
-          "enum": ["bing_search", "click", "quote_lines", "back", "scroll", "open_url"],
-          "description": "The action to take"
-        },
-        "options": {
-          "type": "object",
-          "properties": {
-            "query": {
-              "type": "string",
-              "description": "The search query, used with the 'bing_search' action"
-            },
-            "id": {
-              "type": "integer",
-              "description": "The id of the webpage to open from search results, used with the 'click' action"
-            },
-            "start": {
-              "type": "integer",
-              "description": "The starting int of the text span, used with the 'quote_lines' action"
-            },
-            "end": {
-              "type": "integer",
-              "description": "The ending int of the text span, used with the 'quote_lines' action"
-            },
-            "amt": {
-              "type": "integer",
-              "description": "The amount to scroll up or down, used with the 'scroll' action"
-            },
-            "url": {
-              "type": "string",
-              "description": "The URL of a webpage to open directly, used with the 'open_url' action"
+        "type": "function",
+        "function": {
+            "name": "webBrowser",
+            "description": "Search Bing and navigate webpages, including search, click, back, scroll.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "action": {
+                        "type": "string",
+                        "enum": ["search", "click", "back", "scroll", "quote_lines"],
+                        "description": "The action to take"
+                    },
+                    "options": {
+                        "type": "object",
+                        "properties": {
+                            "query": {
+                                "type": "string",
+                                "description": "The search query, used with the 'search' action"
+                            },
+                            "id": {
+                                "type": "string",
+                                "description": "The id of the webpage to open, used with the 'click' action"  
+                            },
+                            "amt": {
+                                "type": "integer",
+                                "description": "The number of chunks to scroll up or down (-1, 1 etc), used with the 'scroll' action"
+                            },
+                            "start": {
+                                "type": "integer",
+                                "description": "The starting line number, used with the 'quote_lines' action"
+                            },
+                            "end": {
+                                "type": "integer", 
+                                "description": "The ending line number, used with the 'quote_lines' action"
+                            }
+                        },
+                        "required": []
+                    }
+                },
+                "required": ["action"]
             }
-          },
-          "required": []
         }
-      },
-      "required": ["action"]
-    }
-    }
     },
     {
         "type": "function",
@@ -171,7 +167,7 @@ class WebBrowser:
         visible_chunks = self.current_page[start_index:end_index]
         return visible_chunks
 
-    def click(self, id: int) -> List[str]:
+    def click(self, id: str):
         """
         Clicks on a search result with the given ID and displays the webpage content.
 
@@ -238,7 +234,8 @@ class WebBrowser:
             List[str]: The quoted lines.
         """
         print(f"\033[33m\nFUNC: WebBrowser.quote_lines: start: {start}, end: {end}\033[0m")
-        return self.current_page[start:end]
+        quote = "\n".join(self.current_page[start-1:end]) # explanation: start-1 because list index starts from 0. 
+        return quote
 
     def get_current_page(self):
         """
@@ -388,7 +385,6 @@ def query_model(user_query, openai_client, tools, system_message, messages=None)
         ]          
         
     while max_attempts > 0:
-        print(f"\nFUNC: query_model: messages: {messages}\n")        
         response = openai_client.chat.completions.create(
             model="gpt-3.5-turbo-0125",
             temperature=1,
@@ -396,7 +392,7 @@ def query_model(user_query, openai_client, tools, system_message, messages=None)
             messages=messages,
             tools=tools,
         )
-        print(f"\nFUNC: query_model: response: {response}")
+        print(f"\nFUNC: query_model: response: {response.choices[0].message}\n")
         response_message = response.choices[0].message
         if response_message is not None:
             return response_message
@@ -480,7 +476,7 @@ def json_gpt(prompt: str, model: str) -> Dict:
         Dict: The response from the API.
     """
     
-    system_message = "Always respond with JSON format. Pay close attention to the details in the user's query and provide a JSON object in the best possible format."
+    system_message = "Always write valid JSON in the response."
     messages = [
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": prompt}
@@ -531,8 +527,6 @@ def generate_bing_queries_for_user_question(user_question: str, model: str) -> L
 
             Format: {{"queries": ["query_1", "query_2", "query_3"]}}
             """
-
-            print(f"\nFUNC: generate_bing_queries_for_user_question: QUERIES_INPUT: {QUERIES_INPUT}")
             queries = json_gpt(QUERIES_INPUT, model)["queries"]
             print(f"\nFUNC: generate_bing_queries_for_user_question: queries: {queries}")
             # Let's include the original question as well for good measure
@@ -587,7 +581,13 @@ def web_search(user_question, openai_client, bing_search_key, browser_tools, sys
                         visible_chunks = browser.scroll(0)
                         number_of_chunks = len(chunks)
                         messages.append({"role": "assistant", "content": f"Webpage text chunks:{number_of_chunks}. Use scroll to navigate the chunks."})
-                        messages.append({"role": "assistant", "content": f"Visible chunks: {visible_chunks}"})
+                        # Need to pass the index of the chunk too, so the model knows where it is. e.g. here is chunk 1 of 8 >
+                        messages.append(                                                    
+                            {
+                                "role": "assistant",
+                                "content": f"Here is chunk {chunks.index(visible_chunks[0])+1} of {number_of_chunks}: {visible_chunks[0]}",
+                            }
+                        )
                     elif action == "back":
                         print(f"Going back to the previous page")
                         browser.back()
@@ -614,15 +614,14 @@ def web_search(user_question, openai_client, bing_search_key, browser_tools, sys
                     function_args = json.loads(tool_call.function.arguments)
                     user_question = function_args.get("user_question")
                     queries = generate_bing_queries_for_user_question(user_question, model)
-                    print(f"Generated Bing search queries: {queries}")
                     messages.append({"role": "assistant", "content": f"Generated Bing search queries: {json.dumps(queries)}"})
-            print(f"messages: {messages}")
-            response_message = query_model(user_question, openai_client, browser_tools, system_message, messages)
+            
+            # response_message = query_model(user_question, openai_client, browser_tools, system_message, messages)
         else:
             return response_message.content  
 
 openai_client, bing_search_key, custom_search_key = initialize_clients()
 print(f"Test web search")
 browser = WebBrowser()
-answer_text = web_search("user search query", openai_client, custom_search_key, browser_tools, BROWSING_MODE_PROMPT, browser)
+answer_text = web_search("write an example of using claude-3-opus api in python", openai_client, custom_search_key, browser_tools, BROWSING_MODE_PROMPT, browser)
 print(answer_text)

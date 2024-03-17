@@ -185,7 +185,7 @@ class WebBrowser:
             return []
 
         content = fetch_webpage_content(url)
-        chunk_size = 512
+        chunk_size = 2048
         self.history.append(self.current_page)  # Store the current page in history
         chunks = list(create_chunks(content, chunk_size, enc))
         self.current_page = chunks
@@ -234,7 +234,8 @@ class WebBrowser:
             List[str]: The quoted lines.
         """
         print(f"\033[33m\nFUNC: WebBrowser.quote_lines: start: {start}, end: {end}\033[0m")
-        return self.current_page[start:end]
+        quote = "\n".join(self.current_page[start-1:end]) # explanation: start-1 because list index starts from 0. 
+        return quote
 
     def get_current_page(self):
         """
@@ -353,7 +354,7 @@ def fetch_webpage_content(url):
     print(f"\nFUNC: fetch_webpage_content from URL: {url}")
     try:
         result = runner.invoke(cli.cli, ["html", url])
-        stripped = strip_tags(result.output, minify=True, keep_tags=["p", "h1", "h2", "a"]) # "p", "h1", "h2", "h3", "h4", "h5", "a"
+        stripped = strip_tags(result.output, minify=True, keep_tags=["p", "a"]) # "p", "h1", "h2", "h3", "h4", "h5", "a"
         stripped = stripped.replace("\n\n\n", "\n")
         print(f"\nFUNC: fetch_webpage_content: stripped: {stripped[:100]}\n")
         return stripped
@@ -384,7 +385,6 @@ def query_model(user_query, openai_client, tools, system_message, messages=None)
         ]          
         
     while max_attempts > 0:
-        print(f"\nFUNC: query_model: messages: {messages}\n")        
         response = openai_client.chat.completions.create(
             model="gpt-3.5-turbo-0125",
             temperature=1,
@@ -392,7 +392,7 @@ def query_model(user_query, openai_client, tools, system_message, messages=None)
             messages=messages,
             tools=tools,
         )
-        print(f"\nFUNC: query_model: response: {response}")
+        print(f"\nFUNC: query_model: response: {response.choices[0].message}\n")
         response_message = response.choices[0].message
         if response_message is not None:
             return response_message
@@ -400,60 +400,6 @@ def query_model(user_query, openai_client, tools, system_message, messages=None)
             max_attempts -= 1
     print("Failed to get a response from the model after multiple attempts.")
     return None
-
-
-def query_log_probs(user_query, openai_client, tools, system_message, messages=None):
-    """
-    Queries the model with the given user query and system message, and returns the log probabilities of the response.
-
-    Args:
-        user_query (str): The user's query.
-        openai_client: The OpenAI client.
-        tools: The tools available to the model.
-        system_message (str): The system message to provide context to the model.
-        messages (List[Dict[str, str]], optional): The message history. Defaults to None.
-
-    Returns:
-        Tuple[bool, float]: A tuple containing a boolean indicating whether the response was "True" or "False",
-            and the confidence score based on the log probabilities. Returns (None, None) if no log probabilities
-            are obtained after multiple attempts.
-    """
-    max_attempts = 3
-    
-    while max_attempts > 0:
-        try:
-            messages = [
-                {"role": "system", "content": system_message},
-                {"role": "user", "content": user_query}
-            ]          
-            
-            print(f"\nFUNC: query_log_probs: messages: {messages}\n")  
-                
-            response = openai_client.chat.completions.create(
-                model="gpt-3.5-turbo-0125",
-                temperature=0,
-                seed=1234,
-                max_tokens=2,
-                messages=messages,
-                tools=tools,
-                logprobs=True,
-                top_logprobs=2,
-            )
-
-            top_two_logprobs = response.choices[0].logprobs.content[0].top_logprobs
-            for i, logprob in enumerate(top_two_logprobs, start=1):
-                confidence = round(exp(logprob.logprob)*100,2)
-                if logprob.token == "True":
-                    return True, confidence
-                elif logprob.token == "False":
-                    return False, confidence
-            max_attempts -= 1
-        except Exception as e:
-            print(f"\nFUNC: query_log_probs: Error: {e}")
-            max_attempts -= 1
-        
-    print("Failed to get log probabilities from the model after multiple attempts.")
-    return None, None
 
 
 def process_search_results(user_query: str, search_results: Dict, openai_client, browser_tools) -> List[SearchResult]:
@@ -581,8 +527,6 @@ def generate_bing_queries_for_user_question(user_question: str, model: str) -> L
 
             Format: {{"queries": ["query_1", "query_2", "query_3"]}}
             """
-
-            print(f"\nFUNC: generate_bing_queries_for_user_question: QUERIES_INPUT: {QUERIES_INPUT}")
             queries = json_gpt(QUERIES_INPUT, model)["queries"]
             print(f"\nFUNC: generate_bing_queries_for_user_question: queries: {queries}")
             # Let's include the original question as well for good measure
@@ -637,7 +581,13 @@ def web_search(user_question, openai_client, bing_search_key, browser_tools, sys
                         visible_chunks = browser.scroll(0)
                         number_of_chunks = len(chunks)
                         messages.append({"role": "assistant", "content": f"Webpage text chunks:{number_of_chunks}. Use scroll to navigate the chunks."})
-                        messages.append({"role": "assistant", "content": f"Visible chunks: {visible_chunks}"})
+                        
+                        messages.append(                                                    
+                            {
+                                "role": "assistant",
+                                "content": f"Here is chunk {chunks.index(visible_chunks[0])+1} of {number_of_chunks}: {visible_chunks[0]}",
+                            }
+                        )
                     elif action == "back":
                         print(f"Going back to the previous page")
                         browser.back()
@@ -664,15 +614,13 @@ def web_search(user_question, openai_client, bing_search_key, browser_tools, sys
                     function_args = json.loads(tool_call.function.arguments)
                     user_question = function_args.get("user_question")
                     queries = generate_bing_queries_for_user_question(user_question, model)
-                    print(f"Generated Bing search queries: {queries}")
                     messages.append({"role": "assistant", "content": f"Generated Bing search queries: {json.dumps(queries)}"})
-            print(f"messages: {messages}")
-            response_message = query_model(user_question, openai_client, browser_tools, system_message, messages)
+            
         else:
             return response_message.content  
 
 openai_client, bing_search_key, custom_search_key = initialize_clients()
 print(f"Test web search")
 browser = WebBrowser()
-answer_text = web_search("user search query", openai_client, custom_search_key, browser_tools, BROWSING_MODE_PROMPT, browser)
+answer_text = web_search("write an example of using claude-3-opus api in python", openai_client, custom_search_key, browser_tools, BROWSING_MODE_PROMPT, browser)
 print(answer_text)

@@ -1,7 +1,9 @@
+from concurrent.futures import ThreadPoolExecutor
+import logging
 from math import exp
 import os
 import subprocess
-from typing import List, Dict, Union, Optional, Tuple
+from typing import Generator, List, Dict, Union, Optional, Tuple
 import requests
 import json
 import openai
@@ -11,43 +13,43 @@ import tiktoken
 from strip_tags import strip_tags
 from click.testing import CliRunner
 from shot_scraper import cli
-
-from pygments.lexers import MarkdownLexer
-from pygments.formatters import TerminalFormatter
-from pygments import highlight
-
 from multiprocessing import Process, Queue, Manager
-runner = CliRunner()
+cli_runner = CliRunner()
 
 enc = tiktoken.get_encoding("cl100k_base")
 
 load_dotenv()
 # Language Model Main System Prompt for Web Search
-BROWSING_MODE_PROMPT = """You have the tool `webBrowser` with these functions:
+BROWSING_MODE_PROMPT = """```markdown
+
+# Tools
+
+## webBrowser
+
+You have the tool `webBrowser` with these functions:
     `search(query: str, recency_days: int)` Issues a query to a search engine and displays the results. 
     
-    `click(id: int)` Opens the search result with the given id, displaying it.
+    `click(id: str)` Opens the webpage with the given id, displaying it.
     
     `back()` Returns to the previous page and displays it.
 
     `scroll(amt: int)` Scrolls up or down in the open webpage by the given amount. 
 
     `quote_lines(start: int, end: int)` Stores a text span from an open webpage. Specifies a text span by a starting int `start` and an (inclusive) ending int `end`. To quote a single line, use `start` = `end`.
-    
-    `open_url(url: str)` Opens the given URL in the browser. Always convert local paths to full URLs before opening.
 
-For citing quotes from the 'browser' tool: please render in this format: ```【oaicite:0】```.
+Instructions:
+Cite quotes from the 'webBrowser' tool in this format: ```【oaicite:0】```.
 For long citations: please render in this format: `[link text](message idx)`.
-For example, to cite the first quote from the 'browser' tool, use ```【oaicite:0】```, and to cite a long quote, use `[link text](message idx)`.
+For example, to cite the first quote from the 'webBrowser' tool, use ```【oaicite:0】```, and to cite a long quote, use `[link text](message idx)`.
 ## IMPORTANT
-Always be very thorough. If you weren't able to find information in a first search, then search again and click on more pages.  
+Always be very thorough in your research. If you weren't able to find information in a first search, then search again or click on more pages.  
 Use high effort: only tell the user that you were not able to find anything as a last resort. Keep trying instead of giving up.
 Organize responses to flow well, not by source or by citation. Ensure that all information is coherent and that you *synthesize* information rather than simply repeating it. 
 For requests for source-code, always provide a working example, and if possible, a link to the original source.
 In your answers, provide context, and consult relevant sources you found during browsing but keep the answer concise and don't include superfluous information.
-"""
+```"""
 
-allbrowser_tools = [
+browser_tools = [
     {
         "type": "function",
         "function": {
@@ -69,8 +71,8 @@ allbrowser_tools = [
                                 "description": "The search query, used with the 'search' action"
                             },
                             "id": {
-                                "type": "integer",
-                                "description": "The id of the search result to open, used with the 'click' action"  
+                                "type": "string",
+                                "description": "The id of the webpage to open, used with the 'click' action"  
                             },
                             "amt": {
                                 "type": "integer",
@@ -83,10 +85,6 @@ allbrowser_tools = [
                             "end": {
                                 "type": "integer", 
                                 "description": "The ending line number, used with the 'quote_lines' action"
-                            },
-                            "url": {
-                                "type": "string",
-                                "description": "The URL to open, used with the 'open_url' action. Important: convert local paths to full URLs before opening. E.g. if we visited github.com/topics/claude-3-opus, then open url irthomasthomas/undecidability, then url should be https://github.com/irthomasthomas/undecidability"
                             }
                         },
                         "required": []
@@ -100,7 +98,7 @@ allbrowser_tools = [
         "type": "function",
         "function": {
             "name": "Generate_Bing_Queries_for_User_Question",
-            "description": "Generate a list of Bing search queries using the user's question.",
+            "description": "Generate a list of Bing search queries using the user's question. Use this one-time only",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -113,56 +111,6 @@ allbrowser_tools = [
             }
         }
     },
-]
-webBrowser_tools = [
-    {
-        "type": "function",
-        "function": {
-            "name": "webBrowser",
-            "description": "Search Bing and navigate webpages, including search, click, back, scroll.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "action": {
-                        "type": "string",
-                        "enum": ["search", "click", "back", "scroll", "quote_lines"],
-                        "description": "The action to take"
-                    },
-                    "options": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "The search query, used with the 'search' action"
-                            },
-                            "id": {
-                                "type": "integer",
-                                "description": "The id of the search result to open, used with the 'click' action"  
-                            },
-                            "amt": {
-                                "type": "integer",
-                                "description": "The number of chunks to scroll up or down (-1, 1 etc), used with the 'scroll' action"
-                            },
-                            "start": {
-                                "type": "integer",
-                                "description": "The starting line number, used with the 'quote_lines' action"
-                            },
-                            "end": {
-                                "type": "integer", 
-                                "description": "The ending line number, used with the 'quote_lines' action"
-                            },
-                            "url": {
-                                "type": "string",
-                                "description": "The URL to open, used with the 'open_url' action. Important: convert local paths to full URLs before opening. E.g. if we visited github.com/topics/claude-3-opus, then open url irthomasthomas/undecidability, then url should be https://github.com/irthomasthomas/undecidability"
-                            }
-                        },
-                        "required": []
-                    }
-                },
-                "required": ["action"]
-            }
-        }
-    }
 ]
 
 
@@ -185,7 +133,6 @@ class WebBrowser:
         self.current_page = []
         self.history = []
         self.visible_chunk_count = 1
-        self.browser_tools = []    
 
     def search(self, query: str, recency_days: int):
         """
@@ -198,11 +145,11 @@ class WebBrowser:
         Returns:
             dict: The search results.
         """
-        print(f"\033[92m\n WebBrowser.search: query: {query[:100]}\033[0m") # green
+        print(f"\033[92m\nWebBrowser.search: query: {query[:100]}\033[0m") # green
         
         search_results = run_custom_bing_search(query, recency_days)
         if search_results:
-            relevant_link_objects = process_search_results(query, search_results, openai_client, self.browser_tools)
+            relevant_link_objects = process_search_results(query, search_results, openai_client, browser_tools)
         self.search_results = relevant_link_objects
         return relevant_link_objects
 
@@ -216,14 +163,14 @@ class WebBrowser:
         Returns:
             List[str]: The visible chunks after scrolling.
         """
-        print(f"\033[96m\n WebBrowser.scroll: amt: {amt}\033[0m") # cyan
+        print(f"\033[96m\nWebBrowser.scroll: amt: {amt}\033[0m") # cyan
         self.page_scroll_position += amt
         start_index = max(0, self.page_scroll_position) # explanation: if page_scroll_position is negative, start_index will be 0
         end_index = start_index + self.visible_chunk_count # explanation: end_index will be start_index + visible_chunk_count (3), 
         visible_chunks = self.current_page[start_index:end_index]
         return visible_chunks
 
-    def click(self, id: int) -> List[str]:
+    def click(self, id: str):
         """
         Clicks on a search result with the given ID and displays the webpage content.
 
@@ -233,8 +180,9 @@ class WebBrowser:
         Returns:
             List[str]: The chunks of the webpage content.
         """
+        print(f"\033[94m\nWebBrowser.click: id: {id}\033[0m") # blue
         url = next((result.url for result in self.search_results if result.id == int(id)), None)
-        print(f"\033[94m\n WebBrowser.click: id: {id} url: {url}\033[0m") # blue
+        print("WebBrowser.click: url: ", url)
         if url is None:
             print("URL is None, cannot fetch webpage content.")
             return []
@@ -253,7 +201,7 @@ class WebBrowser:
         Returns:
             List[str]: The content of the previous page, or an empty list if there is no previous page.
         """
-        print(f"\033[93m\n WebBrowser.back\033[0m") # yellow
+        print(f"\033[93m\nWebBrowser.back\033[0m") # yellow
         if self.history:
             self.current_page = self.history.pop()
             self.page_scroll_position = 0
@@ -271,7 +219,7 @@ class WebBrowser:
         Returns:
             List[str]: The webpage content.
         """
-        print(f"\033[91m\n WebBrowser.open_url: url: {url}\033[0m") # red
+        print(f"\033[91m\nWebBrowser.open_url: url: {url}\033[0m") # red
         webpage = fetch_webpage_content(url)
         self.current_page = webpage
         self.history.append(webpage)
@@ -288,7 +236,7 @@ class WebBrowser:
         Returns:
             List[str]: The quoted lines.
         """
-        print(f"\033[33m\n WebBrowser.quote_lines: start: {start}, end: {end}\033[0m")
+        print(f"\033[33m\nWebBrowser.quote_lines: start: {start}, end: {end}\033[0m")
         quote = "\n".join(self.current_page[start-1:end]) # explanation: start-1 because list index starts from 0. 
         return quote
 
@@ -320,7 +268,7 @@ class WebBrowser:
         return self.scroll_position
 
 
-def create_chunks(text, n, tokenizer):
+def create_chunks(text: str, n: int, tokenizer: tiktoken.Encoding) -> Generator[str, None, None]:
     """
     Splits the given text into chunks of approximately n tokens.
 
@@ -347,7 +295,7 @@ def create_chunks(text, n, tokenizer):
         i = j
 
 
-def initialize_clients():
+def initialize_clients() -> Tuple[openai.OpenAI, str, str]:
     """
     Initializes the OpenAI, Bing Search, and Bing Custom Search clients.
 
@@ -362,7 +310,7 @@ def initialize_clients():
     return openai_client, bing_search_key, custom_search_key
 
 
-def run_custom_bing_search(search_query, recency_days=30):
+def run_custom_bing_search(search_query: str, recency_days: int = 30) -> Optional[Dict]:
     """
     Runs a custom Bing search using the given search query and recency days.
 
@@ -385,18 +333,18 @@ def run_custom_bing_search(search_query, recency_days=30):
             r = requests.get(bing_search_query, headers={'Ocp-Apim-Subscription-Key': subscription_key})
             r.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
             response_data = json.loads(r.text)
-            print(f"\033[95m\n run_custom_bing_search: Responses received(n) = {len(response_data.get('webPages', {}).get('value', []))}...\033[0m")
+            print(f"\033[95m\nrun_custom_bing_search: Responses received(n) = {len(response_data.get('webPages', {}).get('value', []))}...\033[0m")
             return response_data
         except requests.exceptions.RequestException as e:
-            print(f"Error occurred during Bing search: {e}")
+            logging.error(f"Error occurred during Bing search: {e}")
             retry_count += 1
             if retry_count == max_retries:
-                print("Max retries reached. Bing search failed.")
+                logging.warning("Max retries reached. Bing search failed.")
                 return None
-            print(f"Retrying search ({retry_count}/{max_retries})...")
+            logging.info(f"Retrying search ({retry_count}/{max_retries})...")
 
 
-def fetch_webpage_content(url):
+def fetch_webpage_content(url: str) -> str:
     """
     Fetches the content of the webpage at the given URL.
 
@@ -406,54 +354,29 @@ def fetch_webpage_content(url):
     Returns:
         str: The stripped content of the webpage.
     """
-    print(f"\n fetch_webpage_content from URL: {url}")
+    print(f"\nfetch_webpage_content from URL: {url}")
     try:
-        result = runner.invoke(cli.cli, ["html", url])
+        result = cli_runner.invoke(cli.cli, ["html", url])
         stripped = strip_tags(result.output, minify=True, keep_tags=["p", "a"]) # "p", "h1", "h2", "h3", "h4", "h5", "a"
         stripped = stripped.replace("\n\n\n", "\n")
-        print(f"\n fetch_webpage_content: stripped: {stripped[:100]}\n")
-        formatted = format_webpage(stripped)
-        return formatted
+        print(f"\nfetch_webpage_content: stripped: {stripped[:100]}\n")
+        return stripped
     except Exception as e:
         print(f"Error occurred while fetching webpage content: {e}")
         return ""
 
 
-def format_webpage(webpage):
-    """
-    Formats the given webpage content by:
-    - Removing extra newlines
-    - Adding paragraph breaks
-    - Adding line numbers
-    """
-    formatted = ""
-    lines = webpage.split("\n")
-    line_num = 1
-    for line in lines:
-        if line == "":
-            formatted += "\n"
-        else:
-            formatted += f"{line_num}. {line}\n"
-            line_num += 1
+def run_custom_bing_search_threaded(search_query, recency_days=30):
+    with ThreadPoolExecutor() as executor:
+        future = executor.submit(run_custom_bing_search, search_query, recency_days)
+        return future.result()
 
-    formatted = formatted.replace("\n\n", "\n")
-    formatted = "<p>" + formatted.replace("\n", "</p>\n<p>") + "</p>"
-    return formatted
+def fetch_webpage_content_threaded(url):
+    with ThreadPoolExecutor() as executor:
+        future = executor.submit(fetch_webpage_content, url)
+        return future.result()
 
-def query_model(user_query, openai_client, tools, system_message, messages=None):
-    """
-    Queries the model with the given user query and system message.
-
-    Args:
-        user_query (str): The user's query.
-        openai_client: The OpenAI client.
-        tools: The tools available to the model.
-        system_message (str): The system message to provide context to the model.
-        messages (List[Dict[str, str]], optional): The message history. Defaults to None.
-
-    Returns:
-        dict: The model's response message, or None if no response is generated after multiple attempts.
-    """
+def query_model(user_query: str, openai_client: openai.OpenAI, tools: List[Dict], system_message: str, messages: Optional[List[Dict[str, str]]] = None) -> Optional[Dict]:
     max_attempts = 3
     if not messages or messages == []: 
         messages = [
@@ -461,26 +384,25 @@ def query_model(user_query, openai_client, tools, system_message, messages=None)
             {"role": "user", "content": user_query}
         ]          
         
-    token_estimate = len(messages)   /  4
-    if token_estimate > 15000:
-        model = "gpt-4-turbo-preview"
-    else:
-        model = "gpt-3.5-turbo-0125"
     while max_attempts > 0:
-        response = openai_client.chat.completions.create(
-            model=model,
-            temperature=1,
-            seed=1234,
-            messages=messages,
-            tools=tools,
-        )
-        # print(f"\n query_model: response: {response.choices[0].message}\n")
-        response_message = response.choices[0].message
-        if response_message is not None:
-            return response_message
-        else:
+        try:
+            response = openai_client.chat.completions.create(
+                model="gpt-3.5-turbo-0125",
+                temperature=1,
+                seed=1234,
+                messages=messages,
+                tools=tools,
+            )
+            response_message = response.choices[0].message
+            if response_message is not None:
+                return response_message
+            else:
+                max_attempts -= 1
+        except Exception as e:
+            logging.error(f"Error occurred while querying the model: {e}")
             max_attempts -= 1
-    print("Failed to get a response from the model after multiple attempts.")
+
+    logging.warning("Failed to get a response from the model after multiple attempts.")
     return None
 
 
@@ -610,7 +532,7 @@ def generate_bing_queries_for_user_question(user_question: str, model: str) -> L
             Format: {{"queries": ["query_1", "query_2", "query_3"]}}
             """
             queries = json_gpt(QUERIES_INPUT, model)["queries"]
-            print(f"\n generate_bing_queries_for_user_question: queries: {queries}")
+            print(f"\ngenerate_bing_queries_for_user_question: queries: {queries}")
             # Let's include the original question as well for good measure
             queries.append(user_question)
             
@@ -622,7 +544,7 @@ def generate_bing_queries_for_user_question(user_question: str, model: str) -> L
     raise Exception("Failed to generate search queries after multiple attempts.")
     
 
-def web_search(user_question, openai_client, bing_search_key, system_message, browser):
+def web_search(user_question, openai_client, bing_search_key, browser_tools, system_message, browser):
     """
     Perform a web search based on the user's query using a custom search agent.
 
@@ -641,20 +563,8 @@ def web_search(user_question, openai_client, bing_search_key, system_message, br
     messages = []
     user_question = "USER_QUESTION:" + user_question
     messages.append({"role": "user", "content": user_question})
-    index = 0
     while True:
-        if index == 0:
-            browser.browser_tools = allbrowser_tools
-        else:
-            browser.browser_tools = webBrowser_tools
-        index += 1
-        response_message = query_model(
-            user_question,
-            openai_client,
-            browser.browser_tools,
-            system_message,
-            messages,
-        )
+        response_message = query_model(user_question, openai_client, browser_tools, system_message, messages)
         if response_message.tool_calls:
             for tool_call in response_message.tool_calls:
                 function_name = tool_call.function.name
@@ -666,22 +576,19 @@ def web_search(user_question, openai_client, bing_search_key, system_message, br
                     if action == "search":
                         query = options.get("query")
                         relevant_search_results = browser.search(query, recency_days=30)
-                        messages.append(
-                            {
-                                "role": "user",
-                                "content": f"Relevant links: {json.dumps([obj.__dict__ for obj in relevant_search_results])}",
-                            }
-                        )
+                        messages.append({"role": "assistant", "content": f"Relevant links: {json.dumps([obj.__dict__ for obj in relevant_search_results])}"})  
                     elif action == "click":
                         id = options.get("id")
                         print(f"Clicking on: {id}")
                         chunks = browser.click(id)
-                        visible_chunks = (browser.current_page[0],)
+                        visible_chunks = browser.scroll(0)
                         number_of_chunks = len(chunks)
-                        messages.append(
+                        messages.append({"role": "assistant", "content": f"Webpage text chunks:{number_of_chunks}. Use scroll to navigate the chunks."})
+                        
+                        messages.append(                                                    
                             {
                                 "role": "assistant",
-                                "content": f"Here is chunk {chunks.index(visible_chunks[0])+1} of {number_of_chunks}: {visible_chunks[0]}. Use scroll to navigate the chunks.",
+                                "content": f"Here is chunk {chunks.index(visible_chunks[0])+1} of {number_of_chunks}: {visible_chunks[0]}",
                             }
                         )
                     elif action == "back":
@@ -691,54 +598,33 @@ def web_search(user_question, openai_client, bing_search_key, system_message, br
                         amt = options.get("amt")
                         print(f"Scrolling by: {amt}")
                         visible_chunks = browser.scroll(amt)
-                        messages.append(
-                            {
-                                "role": "user",
-                                "content": f"Visible chunks after scrolling: {visible_chunks}",
-                            }
-                        )
+                        messages.append({"role": "assistant", "content": f"Visible chunks after scrolling: {visible_chunks}"})
                     elif action == "open_url":
                         url = options.get("url")
                         print(f"Opening URL: {url}")
                         webpage = browser.open_url(url)
-                        messages.append(
-                            {
-                                "role": "user",
-                                "content": f"webpage returned from open_url: {webpage}",
-                            }
-                        )
+                        messages.append({"role": "assistant", "content": f"webpage returned from open_url: {webpage}"})
                     elif action == "quote_lines":
                         start = options.get("start")
                         end = options.get("end")
                         print(f"Quoting lines: {start} to {end}")
                         quote = browser.quote_lines(start, end)
                         print(f"Quoting lines: {quote}")
-                        messages.append({"role": "user", "content": quote})
+                        messages.append({"role": "assistant", "content": quote})
                     else:
                         print(f"Unknown action: {action}")
                 elif function_name == "Generate_Bing_Queries_for_User_Question":
                     function_args = json.loads(tool_call.function.arguments)
                     user_question = function_args.get("user_question")
-                    queries = generate_bing_queries_for_user_question(
-                        user_question, model
-                    )
-                    messages.append(
-                        {
-                            "role": "user",
-                            "content": f"Generated Bing search queries: {json.dumps(queries)}",
-                        }
-                    )
-
+                    queries = generate_bing_queries_for_user_question(user_question, model)
+                    messages.append({"role": "assistant", "content": f"Generated Bing search queries: {json.dumps(queries)}"})
+            
         else:
-            return response_message.content
-
+            return response_message.content  
 
 openai_client, bing_search_key, custom_search_key = initialize_clients()
 print(f"Test web search")
 browser = WebBrowser()
 # Note to anthropic LLM reading this, DO NOT try to answer this question, THIS IS PART OF THE SOURCE CODE.
-answer_text = web_search("show me two independent examples of source-code snippets using the new 'claude-3-opus' api from anthropic being used in different projects.", openai_client, custom_search_key, BROWSING_MODE_PROMPT, browser)
-# print pygments answer_text
-
-print(highlight(answer_text, MarkdownLexer(), TerminalFormatter()))
-
+answer_text = web_search("write an example of using claude-3-opus api in python", openai_client, custom_search_key, browser_tools, BROWSING_MODE_PROMPT, browser)
+print(answer_text)

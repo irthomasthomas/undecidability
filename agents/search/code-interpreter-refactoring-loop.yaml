@@ -1,0 +1,63 @@
+prompt: |
+Variables:
+
+{'USER_QUESTION', IDEAL_ANSWER', 'SOURCE_CODE'}
+
+************************
+
+Prompt:
+Here is the research assistant source code to refactor and test:
+
+<source_code>
+{$SOURCE_CODE}
+</source_code>
+
+The research assistant should be able to answer this user question:
+
+<user_question>
+{$USER_QUESTION}
+</user_question>
+
+The ideal answer the research assistant should produce for that question is:
+
+<ideal_answer>
+{$IDEAL_ANSWER}
+</ideal_answer>
+
+First, execute the source code and capture any exceptions or failures.
+
+Next, in a <suggestions> block, provide specific suggestions on how to refactor the source code to
+make it functional and fully testable. Focus on the minimum necessary changes to get it working and
+testable, rather than perfection.
+
+Then, in a <refactored_code> block, refactor the source code based on your suggestions.
+
+Execute the refactored code, using the user question as input. Parse out the research assistant's
+<answer> from the output.
+
+Grade the research assistant's answer against the ideal answer using a strong language model like
+Claude or GPT-4. Importantly, do not reveal the ideal answer to the model doing the grading.
+
+In a <justification> block, briefly explain the key reasons for the grade you assigned. Aim for 2-3
+sentences.
+
+Finally, output the following:
+<refactored_code>
+The refactored source code
+</refactored_code>
+
+<research_assistant_answer>
+The answer produced by the refactored research assistant
+</research_assistant_answer>
+
+<grade>
+The letter grade (A, B, C, D or F) you assigned to the research assistant's answer
+</grade>
+
+<justification>
+Your brief justification for the grade
+</justification>
+
+Remember, the goal is to refactor the code to be testable and to produce a correct answer in the
+shortest time possible. Perfection is not required as long as it works. Let me know if you have any
+other questions!

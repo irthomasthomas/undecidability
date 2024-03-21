@@ -1,3 +1,66 @@
+Variables:
+
+    - RUBRIC
+    - CODE
+
+************************
+
+Prompt:
+You will be grading a piece of source code according to the following rubric:
+
+<rubric>
+Rubric for Assessing the Quality of Python Source Code (Code Review Only)
+
+Readability and Style (24 points)
+
+(12 points) Code follows a consistent naming convention for variables, functions, and classes
+(12 points) Code uses meaningful and descriptive names for variables, functions, and classes
+Code Structure and Organization (25 points)
+
+(7 points) Code is modular and divided into logical functions or classes
+(6 points) Code follows the Single Responsibility Principle (SRP)
+(6 points) Code minimizes duplication and promotes code reuse
+(6 points) Code is organized in a clear and logical manner
+Documentation and Comments (10 points)
+
+(5 points) Code includes inline comments explaining complex or non-obvious sections
+(5 points) Comments are clear, concise, and add value to the code
+Potential Functionality (15 points)
+
+(5 points) Code appears to have the necessary logic to produce the expected output or behavior
+(5 points) Code seems to handle potential edge cases and invalid inputs
+(5 points) Code looks free of obvious logical errors and bugs
+Efficiency and Performance (10 points)
+
+(4 points) Code appears to use appropriate data structures and algorithms for optimal performance
+(3 points) Code seems to minimize unnecessary computations and memory usage
+(3 points) Code avoids unnecessary loops or redundant operations
+Error Handling and Security (10 points)
+
+(4 points) Code includes appropriate error handling and exception handling
+(3 points) Code validates user inputs and handles potential errors
+(3 points) Code is resistant to common security vulnerabilities (e.g., buffer overflows, SQL injection)
+Python-Specific Best Practices (10 points)
+
+(2 points) Code follows PEP 8 style guide for Python code
+(2 points) Code uses Python idioms and best practices (e.g., list comprehensions, generators)
+(2 points) Code leverages Python standard library and built-in functions effectively
+(2 points) Code uses appropriate Python data types and structures
+(2 points) Code handles Python-specific issues (e.g., mutable default arguments, circular imports)
+Total Points: 104
+
+Grading Scale:
+
+A: 94-104 points (90-100%)
+B: 83-93 points (80-89%)
+C: 73-82 points (70-79%)
+D: 62-72 points (60-69%)
+F: 0-61 points (0-59%)
+</rubric>
+
+Here is the code to evaluate:
+
+<code>
 from math import exp
 import os
 import subprocess
@@ -394,28 +457,20 @@ class WebBrowser:
         else:
             return []
 
-    def quote_lines(self, start: int, end: int) -> str:
+    def quote_lines(self, start: int, end: int):
         """
-            Quotes the lines from the current page between the given start and end line numbers (inclusive).
+        Quotes the lines from the current page between the given start and end line numbers (inclusive).
 
-            Args:
-                start (int): The starting line number.
-                end (int): The ending line number.
+        Args:
+            start (int): The starting line number.
+            end (int): The ending line number.
 
-            Returns:
-                str: The quoted lines.
+        Returns:
+            List[str]: The quoted lines.
         """
-        start_line = start - 1
-        quote = "\n".join(   
-            self.current_page[
-                start_line : end + 1
-            ] 
-        ) 
-        
-        print(f"\033[33m\n WebBrowser.quote_lines: start: {start_line}, end: {end}\n{quote}\033[0m")
-        print(f"Quote: {quote}")                
+        print(f"\033[33m\n WebBrowser.quote_lines: start: {start}, end: {end}\033[0m")
+        quote = "\n".join(self.current_page[start-1:end])  # Access the content attribute
         return quote
-
 
 
 
@@ -929,12 +984,202 @@ openai_client, bing_search_key, custom_search_key = initialize_clients()
 print(f"Test web search")
 browser = WebBrowser()
 
-answer_text = web_search("""Find an authoritative source to answer: who is the original author of this quote:
-    There is not any present moment that is unconnected with some future one.
-    The life of every man is a continued chain of incidents, each link of which hangs upon the former. 
-    The transition from cause to effect, from event to event, is often carried on by secret steps, which our foresight cannot divine, and our sagacity is unable to trace. 
-    Evil may at some future period bring forth good; and good may bring forth evil, both equally unexpected.""",
+answer_text = web_search("example question needing a web search to answer.",
                          openai_client, custom_search_key, BROWSING_MODE_PROMPT, browser)
     
     
 print(highlight(answer_text, MarkdownLexer(), TerminalFormatter()))
+</code>
+
+First, carefully review the rubric to understand the different criteria and scoring guidelines.
+
+Then, evaluate the provided code against each of the rubric criteria in order. For each criterion:
+
+1. Analyze how well the code meets that particular criterion. Consider both the strengths and
+weaknesses of the code in that area.
+
+2. Write out your detailed reasoning and justification for the score you will be giving. Explain
+your thought process and refer to specific aspects of the code as evidence. Provide this reasoning
+inside <reasoning> tags.
+
+3. Provide a numeric score for that criterion inside <score> tags, according to the point values
+defined in the rubric. Make sure your score aligns with your written justification.
+
+After you have evaluated the code on all of the individual rubric criteria, add up the scores for
+each criterion and provide the total score inside <total_score> tags.
+
+Finally, based on the total score and the defined grading scale in the rubric, determine and output
+the overall letter grade the code would receive inside <letter_grade> tags.
+
+Remember to be thorough, specific and impartial in your evaluation. Justify all your scores before
+giving them. Evaluate the code as objectively as possible against the defined criteria in the
+rubric.
+
+
+# Review 1: 75 - c
+
+Here is my evaluation of the provided code according to the given rubric:
+
+Readability and Style:
+<reasoning>
+The code generally follows a consistent naming convention for variables, functions and classes. Most names are meaningful and descriptive, making the code readable. However, there are a few instances of single letter variable names like 'r' and 'e' which are not very descriptive. The code could benefit from more verbose variable names in some places to enhance readability.
+</reasoning>
+<score>20</score>
+
+Code Structure and Organization: 
+<reasoning>
+The code is broken down into multiple classes and functions, showing good modularity and organization. Many functions follow the Single Responsibility Principle by focusing on a single task. There is some code reuse through helper functions. The overall structure is fairly clear and logical. However, some functions like web_search() are quite long and could potentially be broken down further. There are also some code duplications that could be refactored.
+</reasoning>
+<score>20</score>
+
+Documentation and Comments:
+<reasoning>
+The code includes docstrings for most functions and classes which explain their purpose and arguments. This aids in understanding the code's structure and behavior. However, the docstrings are sometimes lacking details and don't always provide a full picture of what the code does. There are very few inline comments explaining complex logic within functions. More inline documentation would help with long term maintenance of the code.
+</reasoning>
+<score>7</score>
+
+Potential Functionality:
+<reasoning>
+Based on analyzing the logic, the code seems to have the necessary components to achieve the intended functionality of performing web searches and evaluating the results. It handles different search and navigation actions. However, without running the code, it's hard to assess if it fully produces the expected output. There is error handling in place for certain operations, showing anticipation of potential issues. But more extensive error checking and edge case handling would further improve robustness.
+</reasoning> 
+<score>12</score>
+
+Efficiency and Performance:
+<reasoning>
+The code uses generators in some places to process data efficiently. It also utilizes multiprocessing for parallelization. This shows consideration for performance. However, there are still several areas where efficiency could be improved. Some of the AI querying logic results in repetitive API calls and passing of full data each time, which is inefficient. Restructuring this to be more succinct would help. There is also opportunity to use more built-in functions and data structures to optimize performance.
+</reasoning>
+<score>7</score>
+
+Error Handling and Security:
+<reasoning>
+There is some error handling in place, especially around external API calls and web requests. This helps prevent crashes and provides fallback behavior. However, the error handling is not comprehensive. Many functions lack proper exception handling. User input is not validated extensively, which could lead to unexpected errors or even injection security issues depending on how the input is used. Adding more extensive validation and exception handling would make the code more robust and secure.
+</reasoning>
+<score>6</score>
+
+Python-Specific Best Practices:
+<reasoning>
+The code follows many Python conventions and uses some Python idioms like generators. It leverages the standard library for things like JSON parsing and URL handling. The type hints are a good practice to include. However, the code does not strictly follow PEP8 guidelines - there are many lines that exceed the 79 character limit, and function/variable naming doesn't always use snake_case convention. More compliance with PEP8 would further improve readability.
+</reasoning>
+<score>7</score>
+
+<total_score>79</total_score>
+
+<letter_grade>C</letter_grade>
+
+Based on the rubric's defined grading scale, a total score of 79 equates to a C letter grade for this code. While the code has good structure and potentially achieves the intended functionality, there are improvements to be made in the areas of documentation, error handling, performance optimization and stricter adherence to Python best practices and style guides. With some refactoring and enhancements, this code could be elevated to a higher grade level.
+Here is my evaluation of the provided Python code based on the given rubric:
+
+Readability and Style:
+<reasoning>
+The code generally follows a consistent naming convention for variables, functions, and classes, using lowercase with underscores. Most names are fairly descriptive and meaningful, like "create_chunks", "fetch_webpage_content", "initialize_clients" etc. There are a few less descriptive names like "r", "e", "amt" that could be improved. The code also has some instances of very long lines that hurt readability. Overall, the naming and style is pretty good but has room for improvement.
+</reasoning>
+<score>18</score>
+
+Code Structure and Organization:  
+<reasoning>
+The code is broken up into many small, modular functions which is good for organization. Functions seem to generally follow the Single Responsibility Principle, having a clear single purpose. There are some areas of duplicated logic that could potentially be extracted and reused, like the retry logic when making web requests. The high-level organization with groupings of related functions and classes is decent. Some function docstrings are missing and would improve the organization.
+</reasoning>
+<score>19</score>
+
+Documentation and Comments:
+<reasoning>
+Many of the functions have docstrings explaining what they do, which is great. There are some key functions missing docstrings though. The code is light on inline comments - there are a few explaining more complex sections, but more would be helpful to understand the logic, especially in the longer functions. The existing comments are clear and concise.
+</reasoning>
+<score>7</score>
+
+Potential Functionality:
+<reasoning>
+Based on analyzing the code statically, it seems to contain the core logic needed to provide a functioning web browsing tool that can search, navigate to pages, scroll content, select quotes, etc. The main web_search function brings the pieces together. However, there are several "# Tofix" comments noting known issues and improvements needed, so I don't have full confidence it would run without errors end-to-end and handle all edge cases. More runtime testing would be needed to fully verify.
+</reasoning>
+<score>11</score>
+
+Efficiency and Performance:
+<reasoning>
+In terms of efficiency, the code does use some appropriate techniques like generator functions (yield) to return chunks of content which avoids having to load all content into memory at once. The querying of the OpenAI model is wrapped with retry logic to gracefully handle failures. Overall algorithmic efficiency seems decent. There may be some opportunities to optimize and cache data to reduce redundant fetching of webpages and OpenAI model calls. Parallelization is mentioned as a needed improvement.
+</reasoning>
+<score>7</score>  
+
+Error Handling and Security:
+<reasoning>
+The code does include some good error handling, especially around the external web and API requests. It wraps these risky operations in try/except blocks and has retry logic to handle failures gracefully. However, the error handling is not comprehensive throughout the codebase and could be improved. There is not much validation or sanitization of user input from what I can see, which could open up security risks. The code handles sensitive keys and tokens but does not seem to have best practices around that.
+</reasoning>
+<score>6</score>
+
+Python-Specific Best Practices:
+<reasoning>
+The code does follow many Python conventions and uses some Python-specific functionality effectively, like generator functions, list comprehensions, and standard library modules for things like parsing URLs. However, it doesn't fully adhere to PEP 8 style - there are many lines much longer than 80 chars and some inconsistent spacing and naming. Type hints are used in some places which is good but are missing in many of the functions.
+</reasoning>
+<score>7</score>
+
+<total_score>75</total_score>
+
+<letter_grade>C</letter_grade>
+
+In summary, this Python code has some strengths in its modular structure, use of Python language features, and error handling, but has significant room for improvement in documentation, adherence to PEP 8 style, more comprehensive error and edge case handling, and overall polish. It earns a total score of 75, equivalent to a letter grade of C.
+
+
+
+# Review 2: 78 - c
+Here is my evaluation of the provided code according to the given rubric:
+
+Readability and Style:
+
+<reasoning>
+The code generally follows a consistent naming convention for variables, functions, and classes. Most names are meaningful and descriptive, making the code fairly readable. However, there are a few instances of single letter variable names like "r" and "e" that could be more descriptive. Some function and variable names are also quite long.
+</reasoning>
+
+<score>20</score>
+
+Code Structure and Organization:
+
+<reasoning>
+The code is broken up into functions which helps with modularity. There is some code duplication that could potentially be refactored. The functions generally follow the Single Responsibility Principle, with a few exceptions that try to do too much (like the large web_search function). Overall the code is organized in a fairly logical manner, but some of the high-level functions are quite lengthy and could be broken down further.
+</reasoning>
+
+<score>19</score>
+
+Documentation and Comments:
+
+<reasoning>
+The code includes some inline comments explaining more complex sections, which aids readability. However, many functions are missing docstrings to explain their overall purpose, inputs and outputs. Some of the existing comments are a bit redundant, simply restating what the code does without adding additional clarifying information.
+</reasoning>
+
+<score>6</score>
+
+Potential Functionality:
+
+<reasoning>
+The code appears to cover many possible use cases and edge cases around searching the web with Bing, retrieving results, scrolling through web pages, selecting quotes, etc. Error handling and retries are incorporated. However, without running the code it's hard to be sure all the logic is fully correct and will produce the intended results in all scenarios.
+</reasoning>
+
+<score>12</score> 
+
+Efficiency and Performance:
+
+<reasoning>
+The code uses generators and list comprehensions where appropriate for efficiency. There are a few places where unnecessary loops could potentially be eliminated. The usage of chunking and summarization shows consideration for memory efficiency when dealing with large web pages and search results. However, the recursive model querying in the web_search function may not be optimal.
+</reasoning>
+
+<score>7</score>
+
+Error Handling and Security:  
+
+<reasoning>
+The code includes fairly robust error handling, with try/except blocks and retry logic in several key areas. User inputs are not really relevant here as most inputs come from API responses which are validated. However more could be done to validate the format of the text from web pages before processing it.
+</reasoning>
+
+<score>7</score>
+
+Python-Specific Best Practices:
+
+<reasoning>
+The code uses Python idioms like list comprehensions and generators effectively. It leverages the standard library for things like URL parsing and multiprocessing. Appropriate data structures like dictionaries are used. A few aspects deviate from PEP 8 standards, like variable names and line length. There are a few spots where an object-oriented class-based approach might make the code cleaner compared to the more functional approach used.
+</reasoning>
+
+<score>7</score>
+
+<total_score>78</total_score>
+
+<letter_grade>C</letter_grade>
+
+In summary, the code is functional and incorporates some good Python practices and has solid error handling. However, it could be improved substantially in terms of readability, comments, succinctness, efficiency and organization. Refactoring to improve the modularity, minimize duplication and more closely adhere to PEP 8 standards and the Single Responsibility Principle would generate a higher grade. Overall the code earns a letter grade of C based on the defined rubric.

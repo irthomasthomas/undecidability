@@ -35,7 +35,7 @@ BROWSING_MODE_PROMPT = """You have a 'browser' tool with access to the following
 
     `scroll(amt: int)` Scrolls up or down in the open webpage by the given amount. 
 
-    `quote_lines(start: int, end: int)` Stores a text span from an open webpage. Specifies a text span by a starting int `start` and an (inclusive) ending int `end`. To quote a single line, use `start` = `end`.
+    `quote_lines(start_line: int, end_line: int)` Stores a text span from an open webpage. Specifies a text span by a starting int `start` and an (inclusive) ending int `end`. To quote a single line, use `start` = `end`.
 
 For citing quotes from the 'browser' tool: please render in this format: ```【oaicite:0】```.
 For long citations: please render in this format: `[link text](message idx)`.
@@ -50,6 +50,56 @@ In your answers, provide context, and consult relevant sources you found during 
 """
 # Simplify and merge the allbrowser / webBrowser_tools logic. Instead of having all the tools combined in each list, lets assemble them from the functions as needed.
 
+browser_tools_enums = [
+    {
+        "type": "function",
+        "function": {
+            "name": "webBrowser",
+            "description": "Allows user to interact and navigate webpages, including search, click, back, scroll, and open_url.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "action": {
+                        "type": "string",
+                        "enum": ["bing_search", "click", "back", "scroll", "open_url", "quote_lines"],
+                        "description": "The action to take"
+                    },
+                    "options": {
+                        "type": "object",
+                        "properties": {
+                            "query": {
+                                "type": "string",
+                                "description": "The search query, used with the 'bing_search' action"
+                            },
+                            "id": {
+                                "type": "string",
+                                "description": "The id of the webpage to open, used with the 'click' action"
+                            },
+                            "amt": {
+                                "type": "integer",
+                                "description": "The number of chuncks to scroll up or down (-1, 1 etc), used with the 'scroll' action"
+                            },
+                            "url": {
+                                "type": "string",
+                                "description": "The URL to open, used with the 'open_url' action"
+                            },
+                            "start_line": {
+                                "type": "integer",
+                                "description": "The starting line number, used with the 'quote_lines' action"
+                            },
+                            "end_line": {
+                                "type": "integer",
+                                "description": "The ending line number, used with the 'quote_lines' action"
+                            }
+                        },
+                        "required": []
+                    }
+                },
+                "required": ["action"]
+            }
+        }
+    }
+]
 allbrowser_tools = [
     {
         "type": "function",
@@ -138,11 +188,11 @@ allbrowser_tools = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "start": {
+                    "start_line": {
                         "type": "integer",
                         "description": "The starting line number"
                     },
-                    "end": {
+                    "end_line": {
                         "type": "integer",
                         "description": "The ending line number"
                     }
@@ -393,22 +443,27 @@ class WebBrowser:
         else:
             return []
 
-    def quote_lines(self, start: int, end: int) -> str:
+    def quote_lines(self, start_line: int, end_line: int) -> str:
         """
-        Quotes the lines from the current page between the given start and end line numbers (inclusive).
+            Quotes the lines from the current page between the given start and end line numbers (inclusive).
 
-        Args:
-            start (int): The starting line number.
-            end (int): The ending line number.
+            Args:
+                start_line (int): The starting line number.
+                end_line (int): The ending line number.
 
-        Returns:
-            str: The quoted lines.
+            Returns:
+                str: The quoted lines.
         """
-        print(f"\033[33m\n WebBrowser.quote_lines: start: {start}, end: {end}\033[0m")
-
-        quote = "\n".join(self.current_page[start - 1:end])  # start-1 because list index starts from 0.
         
-        return quote
+        if not self.current_page:
+            return ""
+
+        start_line = max(0, start_line - 1)  # Convert to 0-based index
+        end_line = min(len(self.current_page), end_line)  # Ensure end_line is within bounds
+
+        quoted_lines = self.current_page[start_line:end_line]
+        return "\n".join(quoted_lines)
+        
 
 def create_chunks(text: str, n: int, tokenizer) -> Generator[str, None, None]:
     """
@@ -777,9 +832,9 @@ def web_search(
             model = "openai/gpt-4-turbo-preview"
         else:
             model = "openai/gpt-3.5-turbo-0125"
-
+        # browser.browser_tools = browser_tools_enums
         if index == 0:
-            browser.browser_tools = allbrowser_tools
+            browser.browser_tools = browser_tools_enums
         else:
             browser.browser_tools = webBrowser_tools
         index += 1
@@ -898,7 +953,11 @@ print(f"Test web search")
 browser = WebBrowser()
 
 # Example usage
-user_query = "example advanced query requiring web search."
+user_query = """Find an authoritative source to answer: who is the original author of this quote:
+    There is not any present moment that is unconnected with some future one.
+    The life of every man is a continued chain of incidents, each link of which hangs upon the former. 
+    The transition from cause to effect, from event to event, is often carried on by secret steps, which our foresight cannot divine, and our sagacity is unable to trace. 
+    Evil may at some future period bring forth good; and good may bring forth evil, both equally unexpected."""
 answer_text = web_search(user_query, openai_client, custom_search_key, BROWSING_MODE_PROMPT, browser)
 
 # Render the answer text with syntax highlighting using Pygments

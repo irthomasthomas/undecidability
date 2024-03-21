@@ -46,7 +46,6 @@ Organize responses to flow well, not by source or by citation. Ensure that all i
 For requests for source-code, always provide a working example, and if possible, a link to the original source.
 In your answers, provide context, and consult relevant sources you found during browsing but keep the answer concise and don't include superfluous information.
 """
-
 allbrowser_tools = [
     {
         "type": "function",
@@ -277,20 +276,26 @@ class WebBrowser:
         self.history.append(webpage)
         return webpage
 
-    def quote_lines(self, start: int, end: int):
+    def quote_lines(self, start_line: int, end_line: int) -> str:
         """
         Quotes the lines from the current page between the given start and end line numbers (inclusive).
 
         Args:
-            start (int): The starting line number.
-            end (int): The ending line number.
+            start_line (int): The starting line number.
+            end_line (int): The ending line number.
 
         Returns:
-            List[str]: The quoted lines.
+            str: The quoted lines.
         """
-        print(f"\033[33m\n WebBrowser.quote_lines: start: {start}, end: {end}\033[0m")
-        quote = "\n".join(self.current_page[start-1:end]) # explanation: start-1 because list index starts from 0. 
-        return quote
+        
+        if not self.current_page:
+            return ""
+
+        start_line = max(0, start_line - 1)  # Convert to 0-based index
+        end_line = min(len(self.current_page), end_line)  # Ensure end_line is within bounds
+
+        quoted_lines = self.current_page[start_line:end_line]
+        return "\n".join(quoted_lines)
 
     def get_current_page(self):
         """

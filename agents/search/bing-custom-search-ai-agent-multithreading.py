@@ -180,9 +180,7 @@ class WebBrowser:
         Returns:
             List[str]: The chunks of the webpage content.
         """
-        print(f"\033[94m\nWebBrowser.click: id: {id}\033[0m") # blue
         url = next((result.url for result in self.search_results if result.id == int(id)), None)
-        print("WebBrowser.click: url: ", url)
         if url is None:
             print("URL is None, cannot fetch webpage content.")
             return []
@@ -426,7 +424,7 @@ def process_search_results(user_query: str, search_results: Dict, openai_client,
             "type": "function",
             "function": {
                 "name": "Save_Relevant_Results_ids",
-                "description": "Save a list of relevant url's, the content of which will be retrieved later.",
+                "description": "Save a list of relevant search result id's, the content of which will be retrieved later.",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -559,8 +557,17 @@ def web_search(user_question, openai_client, bing_search_key, browser_tools, sys
     Returns:
         str: The final answer text.
     """
-    model = "gpt-3.5-turbo-0125"
+    
     messages = []
+    if len(messages) > 0:
+        token_estimate = len(enc.encode(messages[-1]["content"]))
+        if token_estimate > 15000:
+            model = "gpt-4-turbo-preview"
+        else:
+            model = "gpt-3.5-turbo-0125"
+    else:
+        model = "gpt-3.5-turbo-0125"
+    
     user_question = "USER_QUESTION:" + user_question
     messages.append({"role": "user", "content": user_question})
     while True:

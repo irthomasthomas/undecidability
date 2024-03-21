@@ -409,10 +409,11 @@ def fetch_webpage_content(url):
     print(f"\n fetch_webpage_content from URL: {url}")
     try:
         result = runner.invoke(cli.cli, ["html", url])
-        stripped = strip_tags(result.output, minify=True, keep_tags=["p", "a"]) # "p", "h1", "h2", "h3", "h4", "h5", "a"
+        stripped = strip_tags(result.output, minify=True, keep_tags=["a"]) # "p", "h1", "h2", "h3", "h4", "h5", "a"
         stripped = stripped.replace("\n\n\n", "\n")
         print(f"\n fetch_webpage_content: stripped: {stripped[:100]}\n")
-        formatted = format_webpage(stripped)
+        formatted = llm_format_webpage(stripped)
+        print(f"Formatted webpage:\n{formatted}")
         return formatted
     except Exception as e:
         print(f"Error occurred while fetching webpage content: {e}")
@@ -423,22 +424,43 @@ def format_webpage(webpage):
     """
     Formats the given webpage content by:
     - Removing extra newlines
-    - Adding paragraph breaks
+    - Remove duplicate text
     - Adding line numbers
     """
-    formatted = ""
+    
+    # Remove duplicate text
     lines = webpage.split("\n")
-    line_num = 1
+    unique_lines = []
     for line in lines:
-        if line == "":
-            formatted += "\n"
-        else:
-            formatted += f"{line_num}. {line}\n"
-            line_num += 1
+        if line not in unique_lines:
+            unique_lines.append(line)
 
-    formatted = formatted.replace("\n\n", "\n")
-    formatted = "<p>" + formatted.replace("\n", "</p>\n<p>") + "</p>"
-    return formatted
+    # Add line numbers
+    numbered_lines = []
+    for i, line in enumerate(unique_lines, start=1):
+        numbered_lines.append(f"{i}. {line}")
+
+    formatted_webpage = "\n".join(numbered_lines)
+    return formatted_webpage
+    
+
+def llm_format_webpage(webpage):
+    webpage = format_webpage(webpage)
+    client = openai.OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.getenv("OPENROUTER_KEY"),
+        )
+    prompt = f"Here is a webpage with line numbers. Remove all HTML tags and return the text. Do include all the URLs. But remove duplicate text and cruft.\n\n{webpage}"
+    model = "anthropic/claude-3-haiku"
+    messages = [
+        {"role": "system", "content": "You are a HTML converter. You convert HTML to plaintext, or Markdown, according to the users need."},
+        {"role": "user", "content": prompt},
+    ]
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+    )
+    return response.choices[0].message.content
 
 def query_model(user_query, openai_client, tools, system_message, messages=None):
     """
@@ -461,7 +483,9 @@ def query_model(user_query, openai_client, tools, system_message, messages=None)
             {"role": "user", "content": user_query}
         ]          
         
-    token_estimate = len(messages)   /  4
+    # token_estimate = enc.encode(messages[-1]["content"]).length # 'list' object has no attribute 'length'
+    token_estimate = len(enc.encode(messages[-1]["content"]))
+
     if token_estimate > 15000:
         model = "gpt-4-turbo-preview"
     else:

@@ -20,6 +20,7 @@ During the course of our project, we used the `browser` tool to perform searches
 
 ### Citing Search Results
 
+
 #### Short Citations
 
 Short citations for direct quotes or referenced information were included using the prescribed format. For example:

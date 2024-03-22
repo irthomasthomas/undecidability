@@ -270,7 +270,7 @@ def web_search(question, model="gpt-3.5-turbo"):
 
 async def main():
     browser = WebBrowser()
-    user_question = """Find an authoritative source to answer: who is the original author of this quote:
+    user_question = """Using authoritative web sources to answer: who is the original author of this quote:
     There is not any present moment that is unconnected with some future one.
     The life of every man is a continued chain of incidents, each link of which hangs upon the former. 
     The transition from cause to effect, from event to event, is often carried on by secret steps, which our foresight cannot divine, and our sagacity is unable to trace. 

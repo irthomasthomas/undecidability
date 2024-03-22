@@ -125,6 +125,7 @@ def estimate_tokens(messages: List[Dict]) -> int:
         return 0
 
 
+
 async def manage_browser_task(query: str, browser: WebBrowser):
     tools = build_tools(browser)
     messages = [{"role": "system", "content": settings.browsing_prompt}]

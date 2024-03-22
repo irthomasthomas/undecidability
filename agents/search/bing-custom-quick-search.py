@@ -50,6 +50,7 @@ In your answers, provide context, and consult relevant sources you found during 
 """
 # Simplify and merge the allbrowser / webBrowser_tools logic. Instead of having all the tools combined in each list, lets assemble them from the functions as needed.
 
+
 browser_tools_enums = [
     {
         "type": "function",

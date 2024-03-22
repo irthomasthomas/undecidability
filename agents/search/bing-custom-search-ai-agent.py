@@ -113,56 +113,6 @@ allbrowser_tools = [
         }
     },
 ]
-webBrowser_tools = [
-    {
-        "type": "function",
-        "function": {
-            "name": "webBrowser",
-            "description": "Search Bing and navigate webpages, including search, click, back, scroll.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "action": {
-                        "type": "string",
-                        "enum": ["search", "click", "back", "scroll", "quote_lines"],
-                        "description": "The action to take"
-                    },
-                    "options": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "The search query, used with the 'search' action"
-                            },
-                            "id": {
-                                "type": "integer",
-                                "description": "The id of the search result to open, used with the 'click' action"  
-                            },
-                            "amt": {
-                                "type": "integer",
-                                "description": "The number of chunks to scroll up or down (-1, 1 etc), used with the 'scroll' action"
-                            },
-                            "start": {
-                                "type": "integer",
-                                "description": "The starting line number, used with the 'quote_lines' action"
-                            },
-                            "end": {
-                                "type": "integer", 
-                                "description": "The ending line number, used with the 'quote_lines' action"
-                            },
-                            "url": {
-                                "type": "string",
-                                "description": "The URL to open, used with the 'open_url' action. Important: convert local paths to full URLs before opening. E.g. if we visited github.com/topics/claude-3-opus, then open url irthomasthomas/undecidability, then url should be https://github.com/irthomasthomas/undecidability"
-                            }
-                        },
-                        "required": []
-                    }
-                },
-                "required": ["action"]
-            }
-        }
-    }
-]
 
 
 class SearchResult:
@@ -275,6 +225,28 @@ class WebBrowser:
         self.current_page = webpage
         self.history.append(webpage)
         return webpage
+    
+    def code_refactor_prompt(self):
+        """
+        
+        """
+        
+        prompt = f"""
+        Refactor the research_assistant_agent source_code so that it can be tested fully and automatically.
+        Algorithm:
+        1: Inputs: 
+        [user_question] - The question to be answered by the reasearch_assistant_agent.
+        [ideal_answer] - The ideal answer to the question. (Hidden from agent)
+        2: Execute source_code or test code and capture any exceptions or failures.
+        3: Return the output, exceptions, failures along with suggestions to refactor the code to make it working and testable.
+        4: Refactor the source_code based on suggestions.
+        5: When the code executes correctly, it's answer should be parsed and graded against the ideal_answer using anthropic claude-3-sonnet or claude-3-haiku, or another strong LLM.
+        
+        Some things to consider: 
+        The ideal answer must be kept secret from the optimization process to avoid the llm simply copying or paraphrasing it.
+        The goal is to have a correct answer in the shortest time possible. Code does not need to be perfect, just working and testable.
+        
+        """
 
     def quote_lines(self, start_line: int, end_line: int) -> str:
         """

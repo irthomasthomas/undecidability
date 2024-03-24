@@ -1,0 +1,37 @@
+prompt: |
+    Variables:
+
+    'CODE'
+
+    ************************
+
+    Prompt:
+    $prompt
+
+    <code>
+    $CODE
+    </code>
+
+    Add comments throughout the code with your notes, questions and suggestions for improvement. Prepend
+    each comment with a tag like Question, ToFix, ToOptimize, etc. to make the purpose of each comment
+    easy to see at a glance.
+
+    Analyze the time complexity of the key algorithms using big O notation. For any algorithms with high
+    time complexity, propose alternative approaches that would be more efficient.
+
+    Look for opportunities to simplify and deduplicate the code without altering the core business
+    logic. Don't feel constrained to the existing implementation. Feel free to re-architect things using
+    modern best practices and the most efficient data structures and algorithms for the task at hand.
+    However, make sure to retain the essential business logic and high-level algorithms.
+
+    As you refactor, be on the lookout for code smells and opportunities for parallelization.
+
+    Please provide your re-implementation of the code optimized for simplicity, efficiency and
+    maintainability inside <optimized_code> tags. The code you write should be production-quality -
+    clean, DRY, performant and something you'd be proud to check into your company's public repo. No toy
+    examples please.
+
+    I'm excited to see how you're able to modernize and optimize this codebase while retaining its core
+    functionality. Let me know if you have any other questions!
+defaults:
+    prompt: "Please carefully study the following code:"

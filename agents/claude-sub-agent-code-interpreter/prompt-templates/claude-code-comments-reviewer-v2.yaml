@@ -1,0 +1,43 @@
+prompt: |
+    Variables:
+
+    'CODE'
+    ************************
+
+    Prompt:
+    $input:
+
+    <code>
+    $CODE
+    </code>
+
+    Please carefully read through all the code comments to understand the desired changes and
+    optimizations. Don't just make superficial tweaks, but aim to deeply grasp the code's purpose and
+    reimplement it using the most modern best practices and design patterns.
+
+    As you refactor, make sure to retain the core business logic and algorithms - those should not
+    change. But everything else is fair game for optimization.
+
+    Look closely for opportunities to improve the code's performance, maintainability, and readability.
+    Consider things like:
+
+    - Using more efficient data structures and algorithms
+    - Minimizing memory allocations
+    - Parallelizing tasks that can be done concurrently
+    - Extracting reusable helper functions
+    - Improving naming and code organization
+    - Adding clarifying comments where needed
+    - Validating inputs and handling errors gracefully
+
+    Aim to transform this code into something you'd be proud to check into your company's production
+    codebase. Pretend this is a high-visibility project.
+
+    Please provide your refactored version of the code inside <refactored_code> tags.
+
+    After you've finished refactoring, take a step back and reflect on your overall approach. Inside
+    <reasoning> tags, explain the key changes you made and why. What were the main opportunities for
+    improvement that you identified? How did you prioritize what to work on? What tradeoffs did you
+    consider as you were refactoring?
+
+    I'm excited to see your refactored code and thought process! Let me know if any part of the
+    instructions are unclear.

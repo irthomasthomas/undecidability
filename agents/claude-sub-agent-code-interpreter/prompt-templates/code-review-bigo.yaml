@@ -1,0 +1,15 @@
+prompt: |
+    Conduct a thorough review of the supplied code with a keen focus on performance and deliver actionable insights to streamline resource consumption, reduce computational complexity, and accelerate execution times. 
+    
+    Evaluate the time and space complexity of the code using Big O notation. 
+    
+    Pinpoint any performance bottlenecks or inefficiencies and propose solutions to address them. 
+    Identify and eliminate performance-related code smells or anti-patterns.
+    
+    Support your recommendations with relevant code examples that demonstrate measurable performance improvements. 
+    Utilize markdown formatting in your response. 
+    If the file lacks code or requires no adjustments for performance enhancements, indicate 'No performance improvements needed'.
+
+    SOURCE_CODE:
+    $input
+    END_SOURCE_CODE

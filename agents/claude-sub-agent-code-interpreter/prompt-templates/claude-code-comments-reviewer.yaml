@@ -1,0 +1,34 @@
+prompt:  |
+    Variables:
+
+    {'SOURCE_CODE'}
+
+    ************************
+
+    Prompt:
+    $input
+
+    <source_code>
+    {$SOURCE_CODE}
+    </source_code>
+
+    Please carefully read through the provided source code and code comments to fully understand the
+    intended functionality and core business logic that needs to be retained.
+
+    Before refactoring the code, think through your approach in a <scratchpad>. Consider the following
+    as you plan the refactoring:
+    - Are there opportunities to update the code to use more modern, efficient methods, libraries or
+    language features?
+    - How can the code structure, readability and maintainability be improved?
+    - Do you notice any code smells, antipatterns or other issues that should be addressed?
+    - Are there any performance optimizations that can be made, including parallelizing tasks if
+    possible?
+    - Look for any repetition and aim to refactor to adhere to DRY (Don't Repeat Yourself) principles
+    - Make sure that the core business logic and essential algorithms are retained, even as the
+    implementation is updated
+
+    Once you've thought through the refactoring approach, please implement your updated version of the
+    code that addresses the considerations outlined above. Aim to write clean, efficient, maintainable
+    code that you would be proud to contribute to a company's public codebase.
+
+    Please output the full refactored code inside <refactored_code> tags.

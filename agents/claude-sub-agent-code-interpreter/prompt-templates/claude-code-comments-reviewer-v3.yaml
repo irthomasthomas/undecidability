@@ -1,0 +1,38 @@
+prompt:  |
+    Variables:
+
+    'CODE'
+
+    ************************
+
+    Prompt:
+    $prompt
+    
+
+    <code>
+    {$CODE}
+    </code>
+
+    Please carefully read through the code and comments to fully understand the intended functionality
+    and business logic.
+
+    Your task is to completely rewrite this code to implement the same core functionality in the
+    cleanest, most efficient, most up-to-date way possible. Do not simply make small tweaks to the
+    existing code. Instead, redesign and reimplement it from scratch using modern best practices.
+
+    The rewritten code should retain the essential business logic and algorithms, but should not be
+    anchored to the original implementation. Feel free to use completely different libraries, data
+    structures, architectures, etc. if it results in cleaner, more efficient and maintainable code.
+
+    As you rewrite, look out for any code smells or antipatterns in the original that should be
+    eliminated. Identify any tasks or processes that could potentially be parallelized for better
+    performance. Make full use of language idioms and features that result in more robust and concise
+    code.
+
+    The end result should be production-quality code that you would be proud to submit to your company's
+    public repository. It should be clean, DRY, performant, well-structured and easy for other
+    developers to understand and maintain.
+
+    Please provide your fully refactored and optimized code inside <refactored_code> tags.
+defaults:
+    prompt: "Here is some code that needs to be refactored and optimized:"

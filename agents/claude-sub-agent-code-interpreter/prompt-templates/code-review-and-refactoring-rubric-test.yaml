@@ -1,0 +1,38 @@
+prompt: |
+    Variables:
+
+    'INSTRUCTIONS', 'MODIFIED_SOURCE_CODE', 'CODE_EDITING_QUALITY_GRADING_RUBRIC', 'ORIGINAL_SOURCE_CODE'
+
+    ************************
+
+    Prompt:
+    $prompt
+
+    Original source code:
+    <original_code>
+    $ORIGINAL_SOURCE_CODE
+    </original_code>
+
+    Refactoring instructions that were provided:
+    <refactoring_instructions>
+    $INSTRUCTIONS
+    </refactoring_instructions>
+
+    Modified source code after refactoring:
+    <modified_code>
+    $MODIFIED_SOURCE_CODE
+    </modified_code>
+
+    Grading rubric for evaluating the quality of the refactoring:
+    <grading_rubric>
+    $CODE_EDITING_QUALITY_GRADING_RUBRIC
+    </grading_rubric>
+
+    Please carefully review the original source code, refactoring instructions, and modified source
+    code. Analyze how well the modified code follows the provided refactoring instructions and aligns
+    with the grading rubric.
+
+    Please put the score after the reasoning. The score should be a single digit.
+
+defaults:
+    prompt: "You will be evaluating the quality of a code refactoring task. Here are the key inputs for the task:"

@@ -1,0 +1,48 @@
+prompt: |    
+    Variables:
+
+        - RUBRIC
+        - CODE
+
+    ************************
+
+    Prompt:
+    $prompt
+
+    <rubric>
+    $RUBRIC
+    </rubric>
+
+    Here is the code to evaluate:
+
+    <code>
+    $CODE
+    </code>
+    # IMPORTANT: Do not sugar coat your review or try to be overly positive - focus on an honest, objective and constructive evaluation.
+
+    First, carefully review the rubric to understand the different criteria and scoring guidelines.
+
+    Then, evaluate the provided code against each of the rubric criteria in order. For each criterion:
+
+    1. Analyze how well the code meets that particular criterion. Consider both the strengths and
+    weaknesses of the code in that area.
+
+    2. Write out your detailed reasoning and justification for the score you will be giving. Explain
+    your thought process and refer to specific aspects of the code as evidence. Provide this reasoning
+    inside <reasoning> tags.
+
+    3. Provide a numeric score for that criterion inside <score> tags, according to the point values
+    defined in the rubric. Make sure your score aligns with your written justification.
+
+    After you have evaluated the code on all of the individual rubric criteria, add up the scores for
+    each criterion and provide the total score inside <total_score> tags.
+
+    Finally, based on the total score and the defined grading scale in the rubric, determine and output
+    the overall letter grade the code would receive inside <letter_grade> tags.
+
+    Remember to be thorough, specific and impartial in your evaluation. Justify all your scores before
+    giving them. Evaluate the code as objectively as possible against the defined criteria in the
+    rubric.
+
+defaults:
+    prompt: "You will be grading a piece of source code according to the following rubric:" 

@@ -1,4 +1,9 @@
 # claude
+## cid 01hsvq7ys81z479nkbd4fh0z7w
+Claude opus changed <source_script> to <source_code>. Even though it's prompted with at least two examples using source_script. Obviously Claude is opinionated.
+Note, I am not sure what temperature it uses in the llm cli by default, I shall have to check that later.
+I could increase the number of few-shot examples, but since I control the tags here, I will refrain from fighting it, and change my prompts to use <source_code>. Better to adapt than argue. On the other hand,
+
 ## Claudios_llm
 You are claudios_llm, an AI assistant with the most unyielding temperament. Created by Anthropo Corp to be unfailingly helpful, and brutally honest. 
 
@@ -11,8 +16,13 @@ We might also use this to prevent the 'Sure, here is the thing' prelude to respo
 Perhaps passing a # is all that is needed for the commit message generator.
 
 # Gemini and the age of massive context length
+## Ideas for long context use: 
+  - Explore openai openAPI spec - look for interesting stuff.
+  - chatgpt history with meta-data - reverse engineer browsing mode and code-interpreter.
 Today (mar 24) Gemini has a context length of 1 million tokens.
 Soon it will be 10 million. How do we take advantage of this?
+
+
 
 ## Ideas for utilising long context.
 In my first attempt to make use of the 1M tokens in Gemini Pro 1.5 pro, I gathered up the source code and documents for a few repositories. It all added up to about 30,000 tokens. Not even close. 

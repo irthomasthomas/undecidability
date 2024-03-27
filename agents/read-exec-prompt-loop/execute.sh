@@ -1,20 +1,18 @@
 #!/bin/bash
-
 # Read the input from pipe
 read -r -d '' input
 
-
-# Extract the code between <source_script> and </source_script>
-code=$(sed -n '/<source_script>/,/<\/source_script>/p' <<< "$input" | sed '1d;$d')
+# Extract the code between <source_code> and </source_code>
+code=$(sed -n '/<source_code>/,/<\/source_code>/p' <<< "$input" | sed '1d;$d')
 
 # Handle nested source tags
-while [[ "$code" == *'<source_script>'* ]]; do
-    code=$(sed -n '/<source_script>/,/<\/source_script>/p' <<< "$code" | sed '1d;$d')
+while [[ "$code" == *'<source_code>'* ]]; do
+    code=$(sed -n '/<source_code>/,/<\/source_code>/p' <<< "$code" | sed '1d;$d')
 done
 
-# Save the code to a file with a default filename
-filename="temp_script.sh"
-echo "$code" > "$filename"
+# Save the code
+temp_file="temp_script.sh"
+echo "$code" > "$temp_file"
 
-# Execute the file
-bash "$filename" "01hs0rzbvnx2c3r65y0tmbn3bq"
+# Execute
+bash "$temp_file"

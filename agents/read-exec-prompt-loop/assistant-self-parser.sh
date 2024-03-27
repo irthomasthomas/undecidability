@@ -9,10 +9,10 @@ extract_code() {
     local start_tag="$2"
     local end_tag="$3"
 
-    code=$(sed -n "/$start_tag/,/$end_tag/p" <<< "$code" | sed '1d;$d')
+    code="$(sed -n -e "/$start_tag/,/$end_tag/p" <<< "$code" | sed '1d;$d')"
 
     while [[ "$code" == *"$start_tag"* ]]; do
-    code=$(sed -n "/$start_tag/,/$end_tag/p" <<< "$code" | sed '1d;$d')
+    code="$(sed -n -e "/$start_tag/,/$end_tag/p" <<< "$code" | sed '1d;$d')"
     done
 
     echo "$code"
@@ -22,7 +22,7 @@ extract_code() {
 code=$(extract_code "$input" '<source_code>' '</source_code>')
 
 # Save the code to a file with a default filename
-filename="conversation_log_generator.sh"
+filename="code_to_exec.sh"
 echo "$code" > "$filename"
 
 # Make the script executable

@@ -37,6 +37,7 @@ With 1M tokens, the possibilities are endless. Here are a few ideas:
 2. Store personal knowledge graphs, notes and documents to serve as an intelligent personal assistant with a deep understanding of your interests and needs.
 
 ## LLM CLI
+Add feature flag that causes llm cli to return a conversation id where a response can be retrieved, rather than returning the response.
 - [ ] upvote, downvote, optional comment
 - [ ] dual-llm side-by-side mode (works already using terminator)
 - [ ] regenerate

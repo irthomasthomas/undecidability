@@ -1,0 +1,15 @@
+
+<conversation>
+  <response>
+    <text>"...example response text..."</text>
+    <relevance>4</relevance>
+    <justification>"The response directly addresses the main topic of the prompt..."</justification>
+    <!-- ... other criteria ... -->
+  </response>
+  <!-- ... more responses ... -->
+  <overall>
+    <goal_completion>3</goal_completion>
+    <justification>"While the conversation partially addressed the task, some aspects remained incomplete..."</justification>
+    <!-- ... other criteria ... -->
+  </overall>
+</conversation>

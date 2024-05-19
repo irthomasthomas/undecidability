@@ -8,11 +8,11 @@
             (parenscript:chain window (get-selection) (to-string))))
          (escaped-selection (uiop/launch-program:escape-sh-token selection))
          (repo "irthomasthomas/undecidability")
-         (python-script
-          "/home/thomas/Development/LLMs/label-maker/github_issues.py")
+         (python-script "/home/ShellLM/Projects/label-maker/github_issues.py")
          (python-interpreter
-          "/home/thomas/Development/Projects/llm/.venv/bin/python3")
+          "/home/ShellLM/Projects/label-maker/.venv/bin/python3")
          (command
-          (list python-interpreter python-script  "--title" title "--url" myurl
-                "--snippet" escaped-selection "--repo" repo "--embedding_db" "undecidability_gh_issues.db")))
+          (list python-interpreter python-script "--title" title "--url" myurl
+                "--snippet" escaped-selection "--repo" repo "--embedding_db"
+                "undecidability_gh_issues.db")))
     (uiop/run-program:run-program command :output t)))

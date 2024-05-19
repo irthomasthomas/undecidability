@@ -2,11 +2,17 @@
 # Bash and Linux Mastery
 
 [Chapter 1: Introduction to Bash](#introduction-to-bash)
+
 [Chapter 2: Advanced Bash and Linux Utilities](#chapter-2-advanced-bash-and-linux-utilities)
+
 [Chapter 3: Mastering Advanced Concepts in Bash and Linux](#chapter-3-mastering-advanced-concepts-in-bash-and-linux)
+
 [Chapter 4: Expert Techniques in Bash and Linux](#chapter-4-expert-techniques-in-bash-and-linux)
+
 [Chapter 5: Mastery in Bash and Linux](#chapter-5-mastery-in-bash-and-linux)
+
 [Chapter 6: Conclusion](#chapter-6-conclusion)
+
 [Chapter 7: Additional Resources](#chapter-7-additional-resources)
 
 

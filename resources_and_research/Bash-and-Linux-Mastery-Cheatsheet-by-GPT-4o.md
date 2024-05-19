@@ -11,9 +11,9 @@
 
 [Chapter 5: Mastery in Bash and Linux](#chapter-5-mastery-in-bash-and-linux)
 
-[Chapter 6: Conclusion](#chapter-6-conclusion)
+[Chapter 6: Advanced Performance, Monitoring, and Scripting in Bash and Linux](#chapter-6-advanced-performance-monitoring-and-scripting-in-bash-and-linux)
 
-[Chapter 7: Additional Resources](#chapter-7-additional-resources)
+[Chapter 7: Specialized Topics in Bash and Linux](#chapter-7-specialized-topics-in-bash-and-linux)
 
 
 # Introduction to Bash
@@ -1565,7 +1565,6 @@ log_message "System backup created"
 log_message "System setup and monitoring complete."
 ```
 
----
 
 # Chapter 7: Specialized Topics in Bash and Linux
 

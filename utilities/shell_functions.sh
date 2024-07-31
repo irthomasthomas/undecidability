@@ -2,6 +2,8 @@
 SCRIPT_DIR="$(dirname "$0")"
 echo "SCRIPT_DIR: $SCRIPT_DIR"
 
+alias f2p='files-to-prompt'
+
 # Dir shortcuts
 alias data='cd $HOME/Data'
 alias docs='cd $HOME/Documents'
@@ -92,9 +94,29 @@ alias issues='gh issue list'
 # Todo: make funcs the path of the current script
 export funcs=$PWD/shell_functions_shared.sh
 
-alias readability="shot-scraper javascript -i $HOME/Code/readability.js"
+alias readability="shot-scraper javascript -i $HOME/linux-stuff/readability.js"
+
+function claude_extract() {
+    curl https://api.anthropic.com/v1/messages \
+        --header "x-api-key: $ANTHROPIC_API_KEY" \
+        --header "anthropic-version: 2023-06-01" \
+        --header "content-type: application/json" \
+        --data '{ 
+            "model": "claude-3-5-sonnet-20240620", 
+            "max_tokens": 1000, 
+            "messages": [ 
+                { 
+                    "role": "user", 
+                    "content": "Extract the name, size, price, and color from this product description as a JSON object <description> The SmartHome Mini is a compact smart home assistant available in black or white for only $49.99. At just 5 inches wide, it lets you control lights, thermostats, and other connected devices via voice or app—no matter where you place it in your home. This affordable little hub brings convenient hands-free control to your smart devices. </description>" 
+                }, 
+                {"role": "assistant", "content": "{"} 
+            ] 
+        }' 
+}
+
 
 open_kate_at_line() {
+    # Todo: Can we make this work for other editors besides kate?
     local Usage = "Usage: open_kate_at_line 'send_issue() {' <file_path>"
     local keyword=$1
     local file_pattern=$2
@@ -147,6 +169,135 @@ send_quickidea_to_gh() {
   idea_text="Quick idea: $idea_text"
   send_note "$note_category" "$target_project"
 }
+
+# Function to get the logprobs of two labels for given content
+get_label_probability() {
+    local content="$1"
+    local label1="$2"
+    local label2="$3"
+    local api_key=$OPENAI_API_KEY
+
+        # Prepare the prompt
+    local prompt="Content: $content\n\nLabel this content as either '$label1' or '$label2'. Respond with only the label."
+
+    # Make the API call
+    response=$(curl -s https://api.openai.com/v1/chat/completions \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $api_key" \
+        -d '{
+        "model": "gpt-4-1106-preview",
+        "messages": [{"role": "user", "content": "'"$prompt"'"}],
+        "max_tokens": 1,
+        "logprobs": 5,
+        "temperature": 0
+    }')
+
+    # Extract the generated text and logprobs
+    generated_text=$(echo "$response" | jq -r '.choices[0].message.content' | tr -d '\n' | tr '[:upper:]' '[:lower:]')
+    logprobs=$(echo "$response" | jq -r '.choices[0].logprobs.content[0].top_logprobs')
+
+    # Function to get probability for a label
+    get_prob() {
+        local label=$1
+        local logprob=$(echo "$logprobs" | jq -r ".[\"$label\"] // .[\"$label:\"] // .[\" $label\"] // .[\" $label:\"] // -100")
+        echo "$logprob" | bc -l
+    }
+
+    # Calculate probabilities
+    logprob1=$(get_prob "$label1")
+    logprob2=$(get_prob "$label2")
+
+    # Convert logprobs to probabilities
+    prob1=$(echo "e($logprob1)" | bc -l)
+    prob2=$(echo "e($logprob2)" | bc -l)
+
+    # If both probabilities are 0, use the generated text to determine the winner
+    if (( $(echo "$prob1 == 0 && $prob2 == 0" | bc -l) )); then
+        if [[ "$generated_text" == "$label1" ]]; then
+            prob1=1
+            prob2=0
+        elif [[ "$generated_text" == "$label2" ]]; then
+            prob1=0
+            prob2=1
+        fi
+    fi
+
+    # Normalize probabilities
+    total=$(echo "$prob1 + $prob2" | bc -l)
+    norm_prob1=$(echo "$prob1 / $total" | bc -l)
+    norm_prob2=$(echo "$prob2 / $total" | bc -l)
+
+    # Determine the label with highest probability
+    if (( $(echo "$norm_prob1 > $norm_prob2" | bc -l) )); then
+        winner="$label1"
+        winning_prob="$norm_prob1"
+    else
+        winner="$label2"
+        winning_prob="$norm_prob2"
+    fi
+
+    # Output result
+    echo "Label: $winner"
+    printf "Probability: %.4f\n" "$winning_prob"
+}
+
+
+
+
+
+llmc() {
+    local continue_conversation=false
+    local prompt_key=""
+    local other_args=()
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -c|--continue)
+                continue_conversation=true
+                shift
+                ;;
+            -p|--prompt)
+                prompt_key="$2"
+                shift 2
+                ;;
+            *)
+                other_args+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    # Prepare the command
+    local cmd=("llm")
+    [[ -n "$prompt_key" ]] && cmd+=("$prompt_key")
+    [[ ${#other_args[@]} -gt 0 ]] && cmd+=("${other_args[@]}")
+
+    if $continue_conversation; then
+        if [[ -n "$CONVERSATION_ID" ]]; then
+            echo "Using conversation_id: $CONVERSATION_ID"
+            cmd+=("--cid" "$CONVERSATION_ID")
+        else
+            echo "No active conversation. Starting a new one."
+        fi
+    fi
+
+    # Execute the llm command
+    "${cmd[@]}"
+
+    # If not continuing a conversation, update the CONVERSATION_ID
+    if ! $continue_conversation && [[ -n "$prompt_key" ]]; then
+        db_query="SELECT conversation_id FROM responses WHERE prompt LIKE '%$prompt_key%' ORDER BY id DESC LIMIT 1"
+        conversation_id=$(sqlite3 /home/ShellLM/.config/io.datasette.llm/logs.db "$db_query")
+        if [[ -n "$conversation_id" ]]; then
+            export CONVERSATION_ID="$conversation_id"
+            echo "New conversation_id set: $CONVERSATION_ID"
+        else
+            echo "No conversation_id found for prompt: $prompt_key"
+        fi
+    fi
+}
+
 
 md() {
     if [ -z "$1" ] # checks if $1 is empty
@@ -239,7 +390,7 @@ explain() {
     # explain <model> -m <model> # Explain clipboard using specified model
     
     # Initialize variables
-    local model="3.5"
+    local model="openrouter/openai/gpt-4o"
     local query=""
     local args=("$@")
 
@@ -267,13 +418,13 @@ explain() {
       query="${args[0]}"
     fi
 
-    prompts=("**System: Arch - Linux Kernel 6.0.** Explain this bash code. Mention serious errors if there are any.:
-    "
-    "Explain this bash code. Be concise. Only mention serious errors.
+    prompts=("Explain this shell code. 
+Be concise.
+Mention only serious errors.
     CODE:
     "
     "Using as few words as required.
-    Explain this bash code to a linux expert. 
+    Explain this shell code to a linux expert. 
     Mention any serious errors:
     ")
     choice=$(( RANDOM % ${#prompts[@]} + 1 ))
@@ -341,7 +492,7 @@ commit() {
   git add .
 
   while true; do
-  local model="claude-3-haiku"
+  local model="openrouter/anthropic/claude-3-haiku:beta"
   while [[ "$#" -gt 0 ]]; do
       case $1 in
           -m|--model)
@@ -417,7 +568,7 @@ help2 () {
     # Usage: help2 <command> <args>
     # Example: help2 "How do I use the terminator terminal?"
     # Example: help2 exec "How do I use the terminator terminal?" 
-    local model="claude-3-sonnet"
+    local model="openrouter/anthropic/claude-3.5-sonnet:beta"
     while [[ "$#" -gt 0 ]]; do
         case $1 in
             -m|--model)
@@ -431,8 +582,8 @@ help2 () {
         esac
     done
     local cmd="$1"
-    # if cmd is 'exec', execute the command and return
-    if [[ "$cmd" == "exec" ]]; then # we execute the command and return
+  
+    if [[ "$cmd" == "exec" ]]; then
       cmd="$2"
       shift 2
       cmd_to_exec="$(llm -m $model -t shellhelp "$cmd" "${@:2}")"
@@ -452,12 +603,11 @@ help2 () {
 
 shelp () {
     # Use llm to generate help for a command.
-    local model="claude-3-sonnet"
+    local model="openrouter/openai/gpt-4o"
     while [[ "$#" -gt 0 ]]; do
         case $1 in
             -m|--model)
                 model="$2"
-                echo "Using model: $model"
                 shift 2
                 ;;
             *)
@@ -744,31 +894,31 @@ alias backupdir='tar -czvf "$(basename "$(pwd)")_$(date "+%Y-%m-%d_%H-%M-%S").ta
 
 clip() {
     # Copy a string to the clipboard.
-    echo "$1" | xsel -b
+    echo "$1" | xclip -selection clipboard
 }
 alias copystring=clip
 
 pathclip() {
     # Copy the path of a file to the clipboard.
-    echo -n $(realpath "$1") | xsel -b
+    echo -n $(realpath "$1") | xclip -selection clipboard
 }
 alias copypath=pathclip
 
 fileclip() {
     # Copy the contents of a file to the clipboard.
-    cat "$1" | xsel -b
+    cat "$1" | xclip -selection clipboard
 }
 alias copyfile=fileclip
 
 paster() {
     # Paste the contents of the clipboard.
-    echo "$(xsel -b -o)"
+    echo "$(xclip -selection clipboard -o)"
 }
 alias v='paster'
 
 selection() {
     # Paste the contents of the selection buffer.
-    xclip -selection primary -o 2>/dev/null || xsel --primary --output 2>/dev/null
+    xclip -selection primary -o 2>/dev/null || xclip -selection clipboard -o 2>/dev/null
   }
 
 # FILE MANAGEMENT #
@@ -893,4 +1043,98 @@ monitor_clipboard() {
       echo "Usage: monitor_clipboard [start [json_file]|stop]"
       ;;
   esac
+}
+
+function code2prompt() {
+
+    # wrap the code2prompt command in a function that sets a number of default excludes
+    # https://github.com/mufeedvh/code2prompt/
+
+    local arguments excludeFiles excludeFolders templatesFolder excludeExtensions
+    
+    templatesFolder="${HOME}/git/code2prompt/templates"
+    excludeFiles=".editorconfig,.eslintignore,.eslintrc,tsconfig.json,.gitignore,.npmrc,LICENSE,esbuild.config.mjs,manifest.json,package-lock.json,\
+    version-bump.mjs,versions.json,yarn.lock,CONTRIBUTING.md,CHANGELOG.md,SECURITY.md,.nvmrc,.env,.env.production,.prettierrc,.prettierignore,.stylelintrc,\
+    CODEOWNERS,commitlint.config.js,renovate.json,pre-commit-config.yaml,.vimrc,poetry.lock,changelog.md,contributing.md,.pretterignore,.prettierrc.json,\
+    .prettierrc.yml,.prettierrc.js,.eslintrc.js,.eslintrc.json,.eslintrc.yml,.eslintrc.yaml,.stylelintrc.js,.stylelintrc.json,.stylelintrc.yml,.stylelintrc.yaml"
+    excludeFolders="screenshots,dist,node_modules,.git,.github,.vscode,build,coverage,tmp,out,temp,logs"
+    excludeExtensions="png,jpg,jpeg,gif,svg,mp4,webm,avi,mp3,wav,flac,zip,tar,gz,bz2,7z,iso,bin,exe,app,dmg,deb,rpm,apk,fig,xd,blend,fbx,obj,tmp,swp,\
+    lock,DS_Store,sqlite,log,sqlite3,dll,woff,woff2,ttf,eot,otf,ico,icns,csv,doc,docx,ppt,pptx,xls,xlsx,pdf,cmd,bat,dat,baseline,ps1,bin,exe,app,tmp,diff,bmp,ico"
+
+    echo "---"
+    echo "Available templates:"
+    ls -1 "$templatesFolder"
+    echo "---"
+
+    echo "Excluding files: $excludeFiles"
+    echo "Excluding folders: $excludeFolders"
+    echo "Run with -nn to disable the default excludes"
+
+    # array of build arguments
+    arguments=("--tokens")
+
+    # if -t and a template name is provided, append the template flag with the full path to the template to the arguments array
+    if [[ $1 == "-t" ]]; then
+      arguments+=("--template" "$templatesFolder/$2")
+      shift 2
+    fi
+
+    if [[ $1 == "-nn" ]]; then
+      command code2prompt "${arguments[@]}" "${@:2}" # remove the -nn flag
+    else
+      command code2prompt "${arguments[@]}" --exclude-files "$excludeFiles" --exclude-folders "$excludeFolders" --exclude "$excludeExtensions" "${*}"
+    fi
+  }
+
+clipimgur() {
+    import png:- | imgur
+  }
+
+
+catselect() {
+  # Path to store the state and selections
+  STATE_FILE="/tmp/selection_stitch_state"
+  SELECTION_FILE="/tmp/selection_stitch_selection"
+
+  # Initialize state and selection storage if not present
+  if [ ! -f "$STATE_FILE" ]; then
+      echo "IDLE" > "$STATE_FILE"
+      echo "" > "$SELECTION_FILE"
+  fi
+
+  # Read current state
+  STATE=$(cat "$STATE_FILE")
+
+  case $STATE in
+      IDLE)
+          # Capture the first selection and transition to FIRST_SELECTION_CAPTURED
+          xclip -o -selection primary > "$SELECTION_FILE"
+          echo "FIRST_SELECTION_CAPTURED" > "$STATE_FILE"
+          kdialog --passivepopup "First selection captured." 2
+          ;;
+      FIRST_SELECTION_CAPTURED)
+          # Capture the second selection, stitch with the first, copy to clipboard, and transition to IDLE
+          FIRST_SELECTION=$(cat "$SELECTION_FILE")
+          SECOND_SELECTION=$(xclip -o -selection primary)
+          echo "$FIRST_SELECTION $SECOND_SELECTION" | xclip -selection clipboard
+          echo "IDLE" > "$STATE_FILE"
+          kdialog --passivepopup "Selection stitched and copied to clipboard." 2
+          ;;
+      *)
+          # Reset to IDLE state in case of unexpected state
+          echo "IDLE" > "$STATE_FILE"
+          ;;
+  esac
+}
+monitor_clipboard() {
+    xclip -selection clipboard -o | while IFS= read -r previous; do
+        while true; do
+            current=$(xclip -selection clipboard -o)
+            if [[ "$current" != "$previous" ]]; then
+                echo "$current"
+                previous="$current"
+            fi
+            sleep 1
+        done
+    done
 }

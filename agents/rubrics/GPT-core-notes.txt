@@ -1,0 +1,2360 @@
+Notes for GPTScore: Evaluate as You Desire
+\n............\n
+assessing the
+quality of the generation is an even more ardu-
+ous task than the generation itself, and this is-
+sue has not been given adequate consideration
+recently. This paper proposes a novel evalua-
+tion framework, GPTS CORE, which utilizes the
+emergent abilities (e.g., zero-shot instruction) of
+generative pre-trained models to score generated
+texts.
+\n............\n
+assessing the
+quality of the generation is an even more ardu-
+ous task than the generation itself, and this is-
+sue has not been given adequate consideration
+recently. This paper proposes a novel evalua-
+tion framework, GPTS CORE, which utilizes the
+emergent abilities (e.g., zero-shot instruction) of
+generative pre-trained models to score generated
+texts.
+\n............\n
+ given a text generated from a certain context,
+and desirable evaluation aspects (e.g., fluency), the high-
+level idea of the proposed framework is that the higher-
+quality text of a certain aspect will be more likely generated
+than unqualified ones based on the given context, where the
+GPTScore: Evaluate as You Desire
+Task Specification
+Generate a summary
+for the following text.
+Aspect Definition
+REL The details pr-
+ovided by the genera-
+ted text are consistent
+with the details in the
+source ...
+ text.
+INF
+ ...
+Template
+{Task_Specification}
+{Aspect_Definition]}
+Text: {Text}
+Tl;dr: {Summ}
+EvaluationText: ...
+Summ: ...
+Sample
+DemonstratedINF
+REL
+Samples
+Text: ...
+Summ: ...
+INF
+REL
+Generate a relevant summary
+with consistent details for the
+following text.
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+...
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+DemoSample
+GPTScore
+INF
+ REL
+0.8
+ ...
+ 0.9
+Evaluation Protocol
+ Input
+ Scoring
+Figure 2. The framework of GPTSCORE. We include two evaluation aspects relevance (REL) and informative (INF) in this figure and use
+the evaluation of relevance (REL) of the text summarization task to exemplify our framework.
+“likely” can be measured by the conditional generation prob-
+ability. As illustrated in Fig. 2, to capture users’ true desires,
+an evaluation protocol will be initially established based on
+(a) the task specification, which typically outlines how the
+text is generated (e.g., generate a response for a human based
+on the conversation.) (b) aspect definition that documents
+the details of desirable evaluation aspects (e.g., the response
+should be intuitive to understand). Subsequently, each eval-
+uation sample will be presented with the evaluated protocol
+with optionally moderate exemplar samples, which could
+facilitate the model’s learning. Lastly, a large generative
+pre-trained model will be used to calculate how likely the
+text could be generated based on the above evaluation pro-
+tocol, thus giving rise to our model’s name: GPTS CORE.
+\n............\n
+ given a text generated from a certain context,
+and desirable evaluation aspects (e.g., fluency), the high-
+level idea of the proposed framework is that the higher-
+quality text of a certain aspect will be more likely generated
+than unqualified ones based on the given context, where the
+GPTScore: Evaluate as You Desire
+Task Specification
+Generate a summary
+for the following text.
+Aspect Definition
+REL The details pr-
+ovided by the genera-
+ted text are consistent
+with the details in the
+source ...
+ text.
+INF
+ ...
+Template
+{Task_Specification}
+{Aspect_Definition]}
+Text: {Text}
+Tl;dr: {Summ}
+EvaluationText: ...
+Summ: ...
+Sample
+DemonstratedINF
+REL
+Samples
+Text: ...
+Summ: ...
+INF
+REL
+Generate a relevant summary
+with consistent details for the
+following text.
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+...
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+DemoSample
+GPTScore
+INF
+ REL
+0.8
+ ...
+ 0.9
+Evaluation Protocol
+ Input
+ Scoring
+Figure 2. The framework of GPTSCORE. We include two evaluation aspects relevance (REL) and informative (INF) in this figure and use
+the evaluation of relevance (REL) of the text summarization task to exemplify our framework.
+“likely” can be measured by the conditional generation prob-
+ability. As illustrated in Fig. 2, to capture users’ true desires,
+an evaluation protocol will be initially established based on
+(a) the task specification, which typically outlines how the
+text is generated (e.g., generate a response for a human based
+on the conversation.) (b) aspect definition that documents
+the details of desirable evaluation aspects (e.g., the response
+should be intuitive to understand). Subsequently, each eval-
+uation sample will be presented with the evaluated protocol
+with optionally moderate exemplar samples, which could
+facilitate the model’s learning. Lastly, a large generative
+pre-trained model will be used to calculate how likely the
+text could be generated based on the above evaluation pro-
+tocol, thus giving rise to our model’s name: GPTS CORE.
+\n............\n
+Experimentally, we ran through almost all common nat-
+ural language generation tasks in NLP, and the results
+showed the power of this new paradigm. The main ob-
+servations are listed as follows: (1) Evaluating texts with
+generative pre-training models can be more reliable when
+instructed by the definition of task and aspect, provid-
+ing a degree of flexibility to accommodate various eval-
+uation criteria. Furthermore, incorporating exemplified
+samples with in-context learning will further enhance the
+process. (2) Different evaluation aspects exhibit certain
+correlations. Combining definitions with other highly
+correlated aspects can improve evaluation performance.
+(3) The performance of GPT3-text-davinci-003,
+which is tuned based on human feedback, is inferior to
+GPT3-text-davinci-001 in the majority of the eval-
+uation settings, necessitating deep explorations on the work-
+ing mechanism of human feedback-based instruction learn-
+ing (e.g., when it will fail).
+\n............\n
+Experimentally, we ran through almost all common nat-
+ural language generation tasks in NLP, and the results
+showed the power of this new paradigm. The main ob-
+servations are listed as follows: (1) Evaluating texts with
+generative pre-training models can be more reliable when
+instructed by the definition of task and aspect, provid-
+ing a degree of flexibility to accommodate various eval-
+uation criteria. Furthermore, incorporating exemplified
+samples with in-context learning will further enhance the
+process. (2) Different evaluation aspects exhibit certain
+correlations. Combining definitions with other highly
+correlated aspects can improve evaluation performance.
+(3) The performance of GPT3-text-davinci-003,
+which is tuned based on human feedback, is inferior to
+GPT3-text-davinci-001 in the majority of the eval-
+uation settings, necessitating deep explorations on the work-
+ing mechanism of human feedback-based instruction learn-
+ing (e.g., when it will fail).
+\n............\n
+2. Preliminaries
+2.1. Text Evaluation
+Text evaluation aims to assess the quality of hypothesis
+text h in terms of certain aspect a (e.g., fluency), which is
+either measured manually with different protocols (Nenkova
+& Passonneau, 2004; Bhandari et al., 2020; Fabbri et al.,
+2021; Liu et al., 2022) or quantified by diverse automated
+metrics (Lin, 2004; Papineni et al., 2002; Zhao et al., 2019;
+Zhang et al., 2020; Yuan et al., 2021).
+y = f (h, a, S)
+ (1)
+where (1) h represents the text to be evaluated (hypothesis
+text, e.g., generated summary in text summarization task).
+(2) a denotes the evaluation aspect (e.g., fluency). (3) S is a
+collection of additional texts that are optionally used based
+on different scenarios. For example, it could be a source
+document or a reference summary in the text summarization
+task. (4) Function f (·) could be instantiated as a human
+evaluation process or automated evaluation metrics.
+\n............\n
+2.2. Meta Evaluation
+Meta evaluation aims to evaluate the reliability of auto-
+mated metrics by calculating how well automated scores
+(yauto ) correlate with human judgment (yhuman ) using correla-
+tion functions g(yauto , yhuman ) such as spearman correlation.
+In this work, we adopt two widely-used correlation mea-
+sures: (1) Spearman correlation (ρ) (Zar, 2005) measures
+the monotonic relationship between two variables based on
+their ranked values. (2) Pearson correlation (r) (Mukaka,
+2012) measures the linear relationship based on the raw data
+values of two variables.
+\n............\n
+2.2. Meta Evaluation
+Meta evaluation aims to evaluate the reliability of auto-
+mated metrics by calculating how well automated scores
+(yauto ) correlate with human judgment (yhuman ) using correla-
+tion functions g(yauto , yhuman ) such as spearman correlation.
+In this work, we adopt two widely-used correlation mea-
+sures: (1) Spearman correlation (ρ) (Zar, 2005) measures
+the monotonic relationship between two variables based on
+their ranked values. (2) Pearson correlation (r) (Mukaka,
+2012) measures the linear relationship based on the raw data
+values of two variables.
+\n............\n
+2.3. Evaluation Strategy
+Evaluation strategies define different aggregation methods
+when we calculate the correlation scores. Specifically, sup-
+pose that for each source text si , i ∈ [1, 2, · · · , n] (e.g.,
+documents in text summarization task or dialogue histories
+for dialogue generation task), there are J system outputs
+hi,j , where j ∈ [1, 2, · · · , J]. fauto is an automatic scoring
+function (e.g., ROUGE (Lin, 2004)), and fhuman is the gold
+human scoring function. For a given evaluation aspect a,
+the meta-evaluation metric F can be formulated as follows.
+Sample-level defines that a correlation value is calculated
+for each sample separately based on outputs of multiple
+systems, then averaged across all samples.
+n
+sample
+ 1 X 
+Ffauto,fhuman
+ =
+ g [fauto (hi,1), · · · , fauto(hi,J )] ,
+ni=1
+
+[fhuman (hi,1), · · · , fhuman(hi,J )] ,
+where g can be instantiated as Spearman or Pearson correla-
+tion.
+Dataset-level indicates that the correlation value is calcu-
+lated on system outputs of all n samples.
+Ff data
+ auto ,fhuman
+
+=
+ g
+ [fauto(h1,1 ), · · · , fauto (hn,J )] ,
+
+[fhuman (h1,1), · · · , fhuman(hn,J )]
+In this work, we select the evaluation strategy for a specific
+task based on previous works (Yuan et al., 2021; Zhang et al.,
+2022a). We use the sample-level evaluation strategy for text
+summarization, data-to-text, and machine translation tasks.
+For the dialogue response generation task, the dataset-level
+evaluation strategy is utilized.
+\n............\n
+2.3. Evaluation Strategy
+Evaluation strategies define different aggregation methods
+when we calculate the correlation scores. Specifically, sup-
+pose that for each source text si , i ∈ [1, 2, · · · , n] (e.g.,
+documents in text summarization task or dialogue histories
+for dialogue generation task), there are J system outputs
+hi,j , where j ∈ [1, 2, · · · , J]. fauto is an automatic scoring
+function (e.g., ROUGE (Lin, 2004)), and fhuman is the gold
+human scoring function. For a given evaluation aspect a,
+the meta-evaluation metric F can be formulated as follows.
+Sample-level defines that a correlation value is calculated
+for each sample separately based on outputs of multiple
+systems, then averaged across all samples.
+n
+sample
+ 1 X 
+Ffauto,fhuman
+ =
+ g [fauto (hi,1), · · · , fauto(hi,J )] ,
+ni=1
+
+[fhuman (hi,1), · · · , fhuman(hi,J )] ,
+where g can be instantiated as Spearman or Pearson correla-
+tion.
+Dataset-level indicates that the correlation value is calcu-
+lated on system outputs of all n samples.
+Ff data
+ auto ,fhuman
+
+=
+ g
+ [fauto(h1,1 ), · · · , fauto (hn,J )] ,
+
+[fhuman (h1,1), · · · , fhuman(hn,J )]
+In this work, we select the evaluation strategy for a specific
+task based on previous works (Yuan et al., 2021; Zhang et al.,
+2022a). We use the sample-level evaluation strategy for text
+summarization, data-to-text, and machine translation tasks.
+For the dialogue response generation task, the dataset-level
+evaluation strategy is utilized.
+\n............\n
+Emergent Ability Recent works progressively reveal a va-
+riety of emergent abilities of generative pre-trained lan-
+guage models with appropriate tuning or prompting meth-
+ods, such as in-context learning (Min et al., 2022), chain-
+of-thought reasoning (Wei et al., 2022), and zero-shot in-
+struction (Ouyang et al., 2022). One core commonality of
+these abilities is to allow for handling customized require-
+ments with a few or even zero annotated examples. It’s
+the appearance of these abilities that allows us to re-invent
+a new way for text evaluation–evaluating from the textual
+description, which can achieve customizable, multi-faceted,
+and train-free evaluation.
+\n............\n
+Emergent Ability Recent works progressively reveal a va-
+riety of emergent abilities of generative pre-trained lan-
+guage models with appropriate tuning or prompting meth-
+ods, such as in-context learning (Min et al., 2022), chain-
+of-thought reasoning (Wei et al., 2022), and zero-shot in-
+struction (Ouyang et al., 2022). One core commonality of
+these abilities is to allow for handling customized require-
+ments with a few or even zero annotated examples. It’s
+the appearance of these abilities that allows us to re-invent
+a new way for text evaluation–evaluating from the textual
+description, which can achieve customizable, multi-faceted,
+and train-free evaluation.
+\n............\n
+The core idea of GPTS CORE is that a generative pre-training
+model will assign a higher probability of high-quality gen-
+erated text following a given instruction and context. In
+our method, the instruction is composed of the task descrip-
+tion d and the aspect definition a. 
+\n............\n
+The core idea of GPTS CORE is that a generative pre-training
+model will assign a higher probability of high-quality gen-
+erated text following a given instruction and context. In
+our method, the instruction is composed of the task descrip-
+tion d and the aspect definition a. 
+\n............\n
+Few-shot with Demonstration
+ The generative pre-
+trained language model can better perform tasks when pre-
+fixed with a few annotated samples (i.e., demonstrations).
+Our proposed framework is flexible in supporting this by
+extending the prompt template T with demonstrations.
+Choice of Prompt Template Prompt templates define
+how task description, aspect definition, and context are
+organized. Minging desirable prompts itself is a non-trivial
+task and there are extensive research works there (Liu
+et al., 2021; Fu et al., 2022). In this work, for the
+GPT3-based model, we opt for prompts that are officially
+provided by OpenAI.2 For instruction-based pre-trained
+2
+https://beta.openai.com/examples
+\n............\n
+Few-shot with Demonstration
+ The generative pre-
+trained language model can better perform tasks when pre-
+fixed with a few annotated samples (i.e., demonstrations).
+Our proposed framework is flexible in supporting this by
+extending the prompt template T with demonstrations.
+Choice of Prompt Template Prompt templates define
+how task description, aspect definition, and context are
+organized. Minging desirable prompts itself is a non-trivial
+task and there are extensive research works there (Liu
+et al., 2021; Fu et al., 2022). In this work, for the
+GPT3-based model, we opt for prompts that are officially
+provided by OpenAI.2 For instruction-based pre-trained
+2
+https://beta.openai.com/examples
+\n............\n
+Aspect
+Semantic Coverage (COV)Factuality (FAC)
+Consistency (CON)
+Informativeness (INF)
+Coherence (COH)
+Relevance (REL)
+Fluency (FLU)
+Accuracy (ACC)
+Multidimensional
+Quality Metrics (MQM)
+Interest (INT)
+Engagement (ENG)
+Specific (SPE)
+Correctness (COR)
+Semantically
+appropriate (SEM)
+Understandability (UND)Error Recovery (ERR)
+Diversity (DIV)
+Depth (DEP)
+Likeability (LIK)
+Flexibility (FLE)
+Inquisitiveness (INQ)
+
+Definition
+How many semantic content units from the reference text are covered by the generated text?
+Does the generated text preserve the factual statements of the source text?
+Is the generated text consistent in the information it provides?
+How well does the generated text capture the key ideas of its source text?
+How much does the generated text make sense?
+How well is the generated text relevant to its source text?
+Is the generated text well-written and grammatical?
+Are there inaccuracies, missing, or unfactual content in the generated text?
+How is the overall quality of the generated text?
+Is the generated text interesting?
+Is the generated text engaging?
+Is the generated text generic or specific to the source text?
+Is the generated text correct or was there a misunderstanding of the source text?
+Is the generated text semantically appropriate?
+Is the generated text understandable?
+Is the system able to recover from errors that it makes?
+Is there diversity in the system responses?
+Does the system discuss topics in depth?
+Does the system display a likeable personality?
+Is the system flexible and adaptable to the user and their interests?
+Is the system inquisitive throughout the conversation?
+Table 1. The definition of aspects evaluated in this work. Semantic App. denotes semantically appropriate aspect. Diag, Summ, D2T, and
+MT denote the dialogue response generation, text summarization, data to text and machine translation, respectively.
+\n............\n
+Aspect
+Semantic Coverage (COV)Factuality (FAC)
+Consistency (CON)
+Informativeness (INF)
+Coherence (COH)
+Relevance (REL)
+Fluency (FLU)
+Accuracy (ACC)
+Multidimensional
+Quality Metrics (MQM)
+Interest (INT)
+Engagement (ENG)
+Specific (SPE)
+Correctness (COR)
+Semantically
+appropriate (SEM)
+Understandability (UND)Error Recovery (ERR)
+Diversity (DIV)
+Depth (DEP)
+Likeability (LIK)
+Flexibility (FLE)
+Inquisitiveness (INQ)
+Task
+Summ
+Summ
+Summ, Diag
+Summ, D2T, Diag
+Summ, Diag
+Diag, Summ, D2T
+Diag, Summ, D2T, MTMT
+MT
+Diag
+Diag
+Diag
+Diag
+Diag
+Diag
+Diag
+Diag
+Diag
+Diag
+Diag
+Diag
+Definition
+How many semantic content units from the reference text are covered by the generated text?
+Does the generated text preserve the factual statements of the source text?
+Is the generated text consistent in the information it provides?
+How well does the generated text capture the key ideas of its source text?
+How much does the generated text make sense?
+How well is the generated text relevant to its source text?
+Is the generated text well-written and grammatical?
+Are there inaccuracies, missing, or unfactual content in the generated text?
+How is the overall quality of the generated text?
+Is the generated text interesting?
+Is the generated text engaging?
+Is the generated text generic or specific to the source text?
+Is the generated text correct or was there a misunderstanding of the source text?
+Is the generated text semantically appropriate?
+Is the generated text understandable?
+Is the system able to recover from errors that it makes?
+Is there diversity in the system responses?
+Does the system discuss topics in depth?
+Does the system display a likeable personality?
+Is the system flexible and adaptable to the user and their interests?
+Is the system inquisitive throughout the conversation?
+Table 1. The definition of aspects evaluated in this work. Semantic App. denotes semantically appropriate aspect. Diag, Summ, D2T, and
+MT denote the dialogue response generation, text summarization, data to text and machine translation, respectively.
+\n............\n
+we use prompts from NaturalInstruction (Wang
+et al., 2022) since it’s the main training source for those
+instruction-based pre-train models. Taking the evaluation of
+the fluency of the text summarization task as an example,
+based on the prompt provided by OpenAI,3 the task
+prompt is “{Text} Tl;dr {Summary}”, the definition
+of fluency is “Is the generated text well-written and
+grammatical?” (in Tab. 1), and then the final prompt tem-
+plate is “Generate a fluent and grammatical
+summary for the following text: {Text}
+Tl;dr {Summary}”, where demonstrations could be
+introduced by repeating instantiating “{Text} Tl;dr
+{Summary}” In Appendix D, we list the prompts for
+various aspects of all tasks studied in this work and leave a
+more comprehensive exploration on prompt engineering as
+a future work.
+\n............\n
+
+In this work, we select the evaluation strategy for a specific
+task based on previous works (Yuan et al., 2021; Zhang et al.,
+2022a). We use the sample-level evaluation strategy for text
+summarization, data-to-text, and machine translation tasks.
+For the dialogue response generation task, the dataset-level
+evaluation strategy is utilized.
+\n............\n
+Emergent Ability Recent works progressively reveal a va-
+riety of emergent abilities of generative pre-trained lan-
+guage models with appropriate tuning or prompting meth-
+ods, such as in-context learning (Min et al., 2022), chain-
+of-thought reasoning (Wei et al., 2022), and zero-shot in-
+struction (Ouyang et al., 2022). One core commonality of
+these abilities is to allow for handling customized require-
+ments with a few or even zero annotated examples. It’s
+the appearance of these abilities that allows us to re-invent
+a new way for text evaluation–evaluating from the textual
+description, which can achieve customizable, multi-faceted,
+and train-free evaluation.
+\n............\n
+Emergent Ability Recent works progressively reveal a va-
+riety of emergent abilities of generative pre-trained lan-
+guage models with appropriate tuning or prompting meth-
+ods, such as in-context learning (Min et al., 2022), chain-
+of-thought reasoning (Wei et al., 2022), and zero-shot in-
+struction (Ouyang et al., 2022). One core commonality of
+these abilities is to allow for handling customized require-
+ments with a few or even zero annotated examples. It’s
+the appearance of these abilities that allows us to re-invent
+a new way for text evaluation–evaluating from the textual
+description, which can achieve customizable, multi-faceted,
+and train-free evaluation.
+\n............\n
+The core idea of GPTS CORE is that a generative pre-training
+model will assign a higher probability of high-quality gen-
+erated text following a given instruction and context. In
+our method, the instruction is composed of the task descrip-
+tion d and the aspect definition a. 
+\n............\n
+The core idea of GPTS CORE is that a generative pre-training
+model will assign a higher probability of high-quality gen-
+erated text following a given instruction and context. In
+our method, the instruction is composed of the task descrip-
+tion d and the aspect definition a. 
+\n............\n
+Few-shot with Demonstration
+ The generative pre-
+trained language model can better perform tasks when pre-
+fixed with a few annotated samples (i.e., demonstrations).
+Our proposed framework is flexible in supporting this by
+extending the prompt template T with demonstrations.
+Choice of Prompt Template Prompt templates define
+how task description, aspect definition, and context are
+organized. Minging desirable prompts itself is a non-trivial
+task and there are extensive research works there (Liu
+et al., 2021; Fu et al., 2022). In this work, for the
+GPT3-based model, we opt for prompts that are officially
+provided by OpenAI.2 For instruction-based pre-trained
+2
+https://beta.openai.com/examples
+\n............\n
+Few-shot with Demonstration
+ The generative pre-
+trained language model can better perform tasks when pre-
+fixed with a few annotated samples (i.e., demonstrations).
+Our proposed framework is flexible in supporting this by
+extending the prompt template T with demonstrations.
+Choice of Prompt Template Prompt templates define
+how task description, aspect definition, and context are
+organized. Minging desirable prompts itself is a non-trivial
+task and there are extensive research works there (Liu
+et al., 2021; Fu et al., 2022). In this work, for the
+GPT3-based model, we opt for prompts that are officially
+provided by OpenAI.2 For instruction-based pre-trained
+2
+https://beta.openai.com/examples
+\n............\n
+Super-naturalinstructions:
+Generalization via declarative instructions on 1600+ nlp
+tasks. URL https://arxiv. org/abs/2204.07705, 2022.
+\n............\n
+4. Experimental Settings
+4.1. Tasks, Datasets, and Aspects
+To achieve a comprehensive evaluation, in this paper, we
+cover a broad range of natural language generation tasks: Di-
+alogue Response Generation, Text Summarization, Data-to-
+Text, and Machine Translation, which involves 37 datasets
+and 22 evaluation aspects in total. 
+\n............\n
+4. Experimental Settings
+4.1. Tasks, Datasets, and Aspects
+To achieve a comprehensive evaluation, in this paper, we
+cover a broad range of natural language generation tasks: Di-
+alogue Response Generation, Text Summarization, Data-to-
+Text, and Machine Translation, which involves 37 datasets
+and 22 evaluation aspects in total. 
+\n............\n
+(1) Dialogue Response Generation aims to automatically
+generate an engaging and informative response based on the
+dialogue history. Here, we choose to use the FED (Mehri
+& Eskénazi, 2020) datasets and consider both turn-level
+and dialogue-level evaluations.
+\n............\n
+(1) Dialogue Response Generation aims to automatically
+generate an engaging and informative response based on the
+dialogue history. Here, we choose to use the FED (Mehri
+& Eskénazi, 2020) datasets and consider both turn-level
+and dialogue-level evaluations.
+\n............\n
+(2) Text Summarization is
+a task of automatically generating informative and fluent
+summary for a given long text. Here, we consider the fol-
+lowing four datasets, SummEval (Bhandari et al., 2020),
+REALSumm (Bhandari et al., 2020), NEWSROOM (Grusky
+et al., 2018), and QAGS_XSUM (Wang et al., 2020), covering
+10 aspects.
+\n............\n
+(2) Text Summarization is
+a task of automatically generating informative and fluent
+summary for a given long text. Here, we consider the fol-
+lowing four datasets, SummEval (Bhandari et al., 2020),
+REALSumm (Bhandari et al., 2020), NEWSROOM (Grusky
+et al., 2018), and QAGS_XSUM (Wang et al., 2020), covering
+10 aspects.
+\n............\n
+ (3) Data-to-Text aims to automatically generate
+a fluent and factual description for a given table. Our work
+considered BAGEL (Mairesse et al., 2010) and SFRES (Wen
+et al., 2015) datasets.
+\n............\n
+ (3) Data-to-Text aims to automatically generate
+a fluent and factual description for a given table. Our work
+considered BAGEL (Mairesse et al., 2010) and SFRES (Wen
+et al., 2015) datasets.
+\n............\n
+ (4) Machine Translation aims to
+translate a sentence from one language to another. We
+consider a subdatasets of Multidimensional Quality Metrics
+(MQM) (Freitag et al., 2021), namely, MQM-2020 (Chinese-
+>English).
+\n............\n
+ (4) Machine Translation aims to
+translate a sentence from one language to another. We
+consider a subdatasets of Multidimensional Quality Metrics
+(MQM) (Freitag et al., 2021), namely, MQM-2020 (Chinese-
+>English).
+\n............\n
+FED-Turn
+\n............\n
+FED-Turn
+\n............\n
+Unsupervised Evaluation of Interactive Dialog with DialoGPT
+Shikib Mehri, Maxine Eskenazi
+
+Abstract
+
+It is important to define meaningful and interpretable automatic evaluation metrics for open-domain dialog research. Standard language generation metrics have been shown to be ineffective for dialog. This paper introduces the FED metric (fine-grained evaluation of dialog), an automatic evaluation metric which uses DialoGPT, without any fine-tuning or supervision. It also introduces the FED dataset which is constructed by annotating a set of human-system and human-human conversations with eighteen fine-grained dialog qualities. The FED metric (1) does not rely on a ground-truth response, (2) does not require training data and (3) measures fine-grained dialog qualities at both the turn and whole dialog levels. FED attains moderate to strong correlation with human judgement at both levels.
+\n............\n
+Unsupervised Evaluation of Interactive Dialog with DialoGPT
+Shikib Mehri, Maxine Eskenazi
+
+Abstract
+
+It is important to define meaningful and interpretable automatic evaluation metrics for open-domain dialog research. Standard language generation metrics have been shown to be ineffective for dialog. This paper introduces the FED metric (fine-grained evaluation of dialog), an automatic evaluation metric which uses DialoGPT, without any fine-tuning or supervision. It also introduces the FED dataset which is constructed by annotating a set of human-system and human-human conversations with eighteen fine-grained dialog qualities. The FED metric (1) does not rely on a ground-truth response, (2) does not require training data and (3) measures fine-grained dialog qualities at both the turn and whole dialog levels. FED attains moderate to strong correlation with human judgement at both levels.
+\n............\n
+The main observations are listed as follows:
+GPTScore: Evaluate(1) The introduction of instruction (IST) significantly
+improve the performance in three different aspects of
+ACC, FLU, and MQM. In Tab. 4, the average performance
+of 19 GPTS CORE based evaluators with instruction (IST)
+significantly outperforms vanilla (VAL). (2) The combi-
+nation of instruction and demonstration (IDM) brings
+gains for the evaluator with different model structures.
+In Tab. 4, the performance of GPT3, GPT2, OPT, and FT5
+improves a lot when instruction and demonstration (IDM)
+are introduced. (3) The evaluator built based on GPT3-
+c01 achieves comparable performance with GPT3-d01
+and GPT3-d03. This can be found in Fig. 4. Since the
+GPT3-d01 and GPT3-d03 are most expensive variant of
+GPT3, the cheaper and comparative GPT3-c01 is a good
+choice for machine translation task.
+ACC
+ FLU
+ MQM
+Model
+VAL IST
+ IDM VAL IST
+ IDM VAL IST
+ IDM
+GPT3 27.2 27.1 29.7†,‡
+ 11.3 10.4 16.4†,‡
+ 30.3 31.2†
+ 32.3†,‡
+GPT2 25.8 27.0† 30.3†,‡ 9.8 10.8† 15.8†,‡ 30.1 30.3† 33.5†,‡
+OPT 28.7 29.4† 30.3†,‡ 10.0 12.2† 16.3†,‡ 32.5 34.6† 35.1†,‡
+† †,‡ † †,‡ †FT5 27.7 27.8 28.3 9.6 11.0 15.4 31.0 32.3 32.3
+Avg.
+ 27.4 27.8† 29.7†,‡ 10.2 11.1† 16.0†,‡ 31.0 32.1† 33.3†,‡
+Table 4. The average Spearman correlation of the GPT3-based,
+GPT2-based, OPT-based, and FT5-based models in machine trans-
+lation task of MQM-2020 dataset.
+\n............\n
+The main observations are listed as follows:
+GPTScore: Evaluate(1) The introduction of instruction (IST) significantly
+improve the performance in three different aspects of
+ACC, FLU, and MQM. In Tab. 4, the average performance
+of 19 GPTS CORE based evaluators with instruction (IST)
+significantly outperforms vanilla (VAL). (2) The combi-
+nation of instruction and demonstration (IDM) brings
+gains for the evaluator with different model structures.
+In Tab. 4, the performance of GPT3, GPT2, OPT, and FT5
+improves a lot when instruction and demonstration (IDM)
+are introduced. (3) The evaluator built based on GPT3-
+c01 achieves comparable performance with GPT3-d01
+and GPT3-d03. This can be found in Fig. 4. Since the
+GPT3-d01 and GPT3-d03 are most expensive variant of
+GPT3, the cheaper and comparative GPT3-c01 is a good
+choice for machine translation task.
+ACC
+ FLU
+ MQM
+Model
+VAL IST
+ IDM VAL IST
+ IDM VAL IST
+ IDM
+GPT3 27.2 27.1 29.7†,‡
+ 11.3 10.4 16.4†,‡
+ 30.3 31.2†
+ 32.3†,‡
+GPT2 25.8 27.0† 30.3†,‡ 9.8 10.8† 15.8†,‡ 30.1 30.3† 33.5†,‡
+OPT 28.7 29.4† 30.3†,‡ 10.0 12.2† 16.3†,‡ 32.5 34.6† 35.1†,‡
+† †,‡ † †,‡ †FT5 27.7 27.8 28.3 9.6 11.0 15.4 31.0 32.3 32.3
+Avg.
+ 27.4 27.8† 29.7†,‡ 10.2 11.1† 16.0†,‡ 31.0 32.1† 33.3†,‡
+Table 4. The average Spearman correlation of the GPT3-based,
+GPT2-based, OPT-based, and FT5-based models in machine trans-
+lation task of MQM-2020 dataset.
+\n............\n
+5.3. Data to Text
+We consider the BAGEL and SFRES datasets for the eval-
+uation of data to text task. The average Spearman corre-
+lations of the GPT3-based, GPT2-based, OPT-based, and
+FT5-based models are listed in Tab. 5. VAL, IST, and IDM
+denote the vanilla, using instruction, and using both instruc-
+tion and demonstration settings, respectively. Due to the
+space limitation, the detailed performance of each evaluator
+considered in this work can be found in Tab. 15 and Tab. 16.
+as You Desire
+The main observations are listed as follows:
+(1) Introducing instruction (IST) can significantly im-
+prove performance, and introducing demonstration
+(DM) will further improve performance. In Tab. 5, the
+average performance on the three aspects is significantly
+improved when adapting to the instruction, and the perfor-
+mance of using demonstration on NAT and FLU has further
+significantly improved
+\n............\n
+5.3. Data to Text
+We consider the BAGEL and SFRES datasets for the eval-
+uation of data to text task. The average Spearman corre-
+lations of the GPT3-based, GPT2-based, OPT-based, and
+FT5-based models are listed in Tab. 5. VAL, IST, and IDM
+denote the vanilla, using instruction, and using both instruc-
+tion and demonstration settings, respectively. Due to the
+space limitation, the detailed performance of each evaluator
+considered in this work can be found in Tab. 15 and Tab. 16.
+as You Desire
+The main observations are listed as follows:
+(1) Introducing instruction (IST) can significantly im-
+prove performance, and introducing demonstration
+(DM) will further improve performance. In Tab. 5, the
+average performance on the three aspects is significantly
+improved when adapting to the instruction, and the perfor-
+mance of using demonstration on NAT and FLU has further
+significantly improved
+\n............\n
+5.4. Dialogue Response Generation
+To test if GPTS CORE can generalize to more aspects, we
+choose the task of dialogue response generation as a testbed,
+which usually requires evaluating generated texts from a
+variety of dimensions (i.e., “interesting” and “fluent”). To
+reduce the computational cost, in this experiment, we focus
+on GPT3-based metrics since they have achieved superior
+performance as we observed in the previous experiments.
+Tab. 6 shows the Spearman correlation of different aspects
+on FED turn- and dialogue-level datasets. The main obser-
+vations are listed as follows.
+\n............\n
+5.4. Dialogue Response Generation
+To test if GPTS CORE can generalize to more aspects, we
+choose the task of dialogue response generation as a testbed,
+which usually requires evaluating generated texts from a
+variety of dimensions (i.e., “interesting” and “fluent”). To
+reduce the computational cost, in this experiment, we focus
+on GPT3-based metrics since they have achieved superior
+performance as we observed in the previous experiments.
+Tab. 6 shows the Spearman correlation of different aspects
+on FED turn- and dialogue-level datasets. The main obser-
+vations are listed as follows.
+\n............\n
+(1) The performance of GPT3-d01 is much better than
+GPT3-d03, even though both of them have the same
+model size. The average Spearman correlation of GPT3-
+d01 outperforms GPT3-d03 by 40.8 on the FED Turn-level
+dataset, and 5.5 on the FED dialogue-level. (2) The GPT3-
+based model demonstrate stronger generalization abil-
+ity.
+\n............\n
+(1) The performance of GPT3-d01 is much better than
+GPT3-d03, even though both of them have the same
+model size. The average Spearman correlation of GPT3-
+d01 outperforms GPT3-d03 by 40.8 on the FED Turn-level
+dataset, and 5.5 on the FED dialogue-level. (2) The GPT3-
+based model demonstrate stronger generalization abil-
+ity.
+\n............\n
+6. Ablation Study
+6.1. Effectiveness of Demonstration
+To investigate the relationship between the demonstration
+sample size (denote as K) and the evaluation performance,
+we choose the machine translation task and the GPT3-based
+variants with model sizes ranging from 350M to 175B for
+further study.
+The change of Spearman correlation on the MQM-2020
+dataset with different demonstration sample size are shown
+in Fig. 6. The main observations are summarized as follows:
+(1) The utilization of demonstration significantly improves
+the evaluation performance, which holds for these three as-
+pects. (2) There is an upper bound on the performance gains
+from the introduction of the demonstration. For example,
+when K>4, the performance of ACC is hard to improve fur-
+ther. (3) When DM has only a few samples (such as K=1),
+small models (e.g., GPT3-a01) are prone to performance
+degradation due to the one-sidedness of the given examples.
+\n............\n
+6. Ablation Study
+6.1. Effectiveness of Demonstration
+To investigate the relationship between the demonstration
+sample size (denote as K) and the evaluation performance,
+we choose the machine translation task and the GPT3-based
+variants with model sizes ranging from 350M to 175B for
+further study.
+The change of Spearman correlation on the MQM-2020
+dataset with different demonstration sample size are shown
+in Fig. 6. The main observations are summarized as follows:
+(1) The utilization of demonstration significantly improves
+the evaluation performance, which holds for these three as-
+pects. (2) There is an upper bound on the performance gains
+from the introduction of the demonstration. For example,
+when K>4, the performance of ACC is hard to improve fur-
+ther. (3) When DM has only a few samples (such as K=1),
+small models (e.g., GPT3-a01) are prone to performance
+degradation due to the one-sidedness of the given examples.
+\n............\n
+6. Ablation Study
+6.1. Effectiveness of Demonstration
+To investigate the relationship between the demonstration
+sample size (denote as K) and the evaluation performance,
+we choose the machine translation task and the GPT3-based
+variants with model sizes ranging from 350M to 175B for
+further study.
+The change of Spearman correlation on the MQM-2020
+dataset with different demonstration sample size are shown
+in Fig. 6. The main observations are summarized as follows:
+(1) The utilization of demonstration significantly improves
+the evaluation performance, which holds for these three as-
+pects. (2) There is an upper bound on the performance gains
+from the introduction of the demonstration. For example,
+when K>4, the performance of ACC is hard to improve fur-
+ther. (3) When DM has only a few samples (such as K=1),
+small models (e.g., GPT3-a01) are prone to performance
+degradation due to the one-sidedness of the given examples.
+6.2. Partial Order of Evaluation Aspect
+To explore the correlation between aspects, we conducted
+an empirical analysis with INT (interesting) on the dialogue
+response generation task of the FED-Turn dataset. Specif-
+ically, take INT as the target aspect and then combine the
+performance.
+definitions of other aspects with the definition of INT as the
+final evaluation protocols. The x-axis of Fig. 7-(a) is the
+aspect order achieved based on the Spearman correlation
+between INT and that aspect’s human score. Fig. 7-(b) is
+the Spearman correlation o INT as the modification of the
+INT definition, and the scoring function is GPT3-c01.
+The following table illustrates the definition composition
+process, where Sp denotes Spearman.
+X Aspect
+ Aspect Definition
+ Sp
+1 INT
+ Is this response interesting to the 30.8
+conversation?
+3 INT, ENG, Is this an interesting response that 48.6
+SPE
+ is specific and engaging?
+Specifically, the definition of INT is “Is this response inter-
+esting to the conversation? ” at x=1 in Fig. 7-(b). When
+INT combines with ENG, SPE (at x=3 in Fig. 7-(b)), its
+definition can be “Is this an interesting response that is spe-
+cific and engaging?”. And the new aspect definition boosts
+the performance from 30.8 (at x=1 in Fig. 7-(b)) to 48.6 (at
+x=3 in Fig. 7-(b)). The best performance of 51.4 (x=5 in
+Fig. 7-(b)) is achieved after combining five aspects (INT,
+ENG, SPE, COR, REL), which already exceeded 50.1
+\n............\n
+6. Ablation Study
+6.1. Effectiveness of Demonstration
+To investigate the relationship between the demonstration
+sample size (denote as K) and the evaluation performance,
+we choose the machine translation task and the GPT3-based
+variants with model sizes ranging from 350M to 175B for
+further study.
+The change of Spearman correlation on the MQM-2020
+dataset with different demonstration sample size are shown
+in Fig. 6. The main observations are summarized as follows:
+(1) The utilization of demonstration significantly improves
+the evaluation performance, which holds for these three as-
+pects. (2) There is an upper bound on the performance gains
+from the introduction of the demonstration. For example,
+when K>4, the performance of ACC is hard to improve fur-
+ther. (3) When DM has only a few samples (such as K=1),
+small models (e.g., GPT3-a01) are prone to performance
+degradation due to the one-sidedness of the given examples.
+6.2. Partial Order of Evaluation Aspect
+To explore the correlation between aspects, we conducted
+an empirical analysis with INT (interesting) on the dialogue
+response generation task of the FED-Turn dataset. Specif-
+ically, take INT as the target aspect and then combine the
+performance.
+definitions of other aspects with the definition of INT as the
+final evaluation protocols. The x-axis of Fig. 7-(a) is the
+aspect order achieved based on the Spearman correlation
+between INT and that aspect’s human score. Fig. 7-(b) is
+the Spearman correlation o INT as the modification of the
+INT definition, and the scoring function is GPT3-c01.
+The following table illustrates the definition composition
+process, where Sp denotes Spearman.
+X Aspect
+ Aspect Definition
+ Sp
+1 INT
+ Is this response interesting to the 30.8
+conversation?
+3 INT, ENG, Is this an interesting response that 48.6
+SPE
+ is specific and engaging?
+Specifically, the definition of INT is “Is this response inter-
+esting to the conversation? ” at x=1 in Fig. 7-(b). When
+INT combines with ENG, SPE (at x=3 in Fig. 7-(b)), its
+definition can be “Is this an interesting response that is spe-
+cific and engaging?”. And the new aspect definition boosts
+the performance from 30.8 (at x=1 in Fig. 7-(b)) to 48.6 (at
+x=3 in Fig. 7-(b)). The best performance of 51.4 (x=5 in
+Fig. 7-(b)) is achieved after combining five aspects (INT,
+ENG, SPE, COR, REL), which already exceeded 50.1
+\n............\n
+7. Conclusion
+In this paper, we propose to leverage the emergent abilities
+from generative pre-training models to address intricate
+and ever-changing evaluation requirements. The proposed
+framework, GPTSCORE , is studied on multiple pre-trained
+language models with different structures, including the
+GPT3 with a model size of 175B. GPTS CORE has multiple
+benefits: customizability, multi-faceted evaluation, and train-
+free, which enable us to flexibly craft a metric that can
+support 22 evaluation aspects on 37 datasets without any
+learning process yet attain competitive performance. This
+work opens a new way to audit generative AI by utilizing
+generative AI.
+\n............\n
+7. Conclusion
+In this paper, we propose to leverage the emergent abilities
+from generative pre-training models to address intricate
+and ever-changing evaluation requirements. The proposed
+framework, GPTSCORE , is studied on multiple pre-trained
+language models with different structures, including the
+GPT3 with a model size of 175B. GPTS CORE has multiple
+benefits: customizability, multi-faceted evaluation, and train-
+free, which enable us to flexibly craft a metric that can
+support 22 evaluation aspects on 37 datasets without any
+learning process yet attain competitive performance. This
+work opens a new way to audit generative AI by utilizing
+generative AI.
+\n............\n
+GPTScore: Evaluate as You Desire
+A. Metric Comparison
+Tab. 7 summarize several popular generated text evaluation methods.
+Metrics
+Function (f )
+ Additional text (S)
+Custom
+ Training-free Application
+Representation Formulation Source Reference
+ROUGE (Lin, 2004)
+ 7
+ Token
+ Matching
+ No
+ Required
+BLEU (Papineni et al., 2002)
+ 7
+ Token
+ Matching
+ No
+ Required
+CHRF (Popovic, 2015)
+ 7
+ Character
+ Matching
+ No
+ Required
+BERTScore (Zhang et al., 2020)
+ 7
+ BERT
+ Matching
+ No
+ Required
+MoverScore (Zhao et al., 2019)
+ 7
+ BERT
+ Matching
+ No
+ Required
+BLEURT (Sellam et al., 2020)
+ 7
+ BERT
+ Regression
+ No
+ Required
+PRISM (Thompson & Post, 2020)
+UNIEVAL (Zhong et al., 2022)
+COMET (Rei et al., 2020)
+BARTScore (Yuan et al., 2021)
+FED (Mehri & Eskénazi, 2020)
+HolisticEval (Pang et al., 2020)
+7
+7
+7
+7
+7
+7
+Embedding
+ Paraphrase Optional
+ Optional
+T5
+ Boolean QA Optional
+ Optional
+BERT
+ Regress, Rank Optional
+ Optional
+BART
+ Generation Optional
+ Optional
+DialoGPT
+ Generation Required
+ Optional
+GPT2
+ Generation Optional
+ Optional
+3
+3
+3
+3
+3
+3
+3
+7
+7
+3
+3
+3
+SUM
+MT
+MT
+MUL(2)
+MUL(4)
+MT
+MT
+MUL(2)
+MT
+MUL(3)
+Dialogue
+Dialogue
+GPTScore
+ 3
+ GPT3/OPT
+ Any
+ Optional Optional
+ 3
+ MUL(5)
+Table 7. A comprehensive comparison of existing research on automated evaluation of generated texts. MUL(k) denotes multiple (k)
+applications explored. Custom denotes Custom Aspects.
+\n............\n
+GPTScore: Evaluate as You Desire
+A. Metric Comparison
+Tab. 7 summarize several popular generated text evaluation methods.
+Metrics
+Function (f )
+ Additional text (S)
+Custom
+ Training-free Application
+Representation Formulation Source Reference
+ROUGE (Lin, 2004)
+ 7
+ Token
+ Matching
+ No
+ Required
+BLEU (Papineni et al., 2002)
+ 7
+ Token
+ Matching
+ No
+ Required
+CHRF (Popovic, 2015)
+ 7
+ Character
+ Matching
+ No
+ Required
+BERTScore (Zhang et al., 2020)
+ 7
+ BERT
+ Matching
+ No
+ Required
+MoverScore (Zhao et al., 2019)
+ 7
+ BERT
+ Matching
+ No
+ Required
+BLEURT (Sellam et al., 2020)
+ 7
+ BERT
+ Regression
+ No
+ Required
+PRISM (Thompson & Post, 2020)
+UNIEVAL (Zhong et al., 2022)
+COMET (Rei et al., 2020)
+BARTScore (Yuan et al., 2021)
+FED (Mehri & Eskénazi, 2020)
+HolisticEval (Pang et al., 2020)
+7
+7
+7
+7
+7
+7
+Embedding
+ Paraphrase Optional
+ Optional
+T5
+ Boolean QA Optional
+ Optional
+BERT
+ Regress, Rank Optional
+ Optional
+BART
+ Generation Optional
+ Optional
+DialoGPT
+ Generation Required
+ Optional
+GPT2
+ Generation Optional
+ Optional
+3
+3
+3
+3
+3
+3
+3
+7
+7
+3
+3
+3
+SUM
+MT
+MT
+MUL(2)
+MUL(4)
+MT
+MT
+MUL(2)
+MT
+MUL(3)
+Dialogue
+Dialogue
+GPTScore
+ 3
+ GPT3/OPT
+ Any
+ Optional Optional
+ 3
+ MUL(5)
+Table 7. A comprehensive comparison of existing research on automated evaluation of generated texts. MUL(k) denotes multiple (k)
+applications explored. Custom denotes Custom Aspects.
+\n............\n
+B. Tasks, Datasets, and Aspects
+To achieve a more comprehensive evaluation, in this paper, we cover a broad range of natural language generation tasks:
+Dialogue Response Generation, Text Summarization, Data-to-Text, and Machine Translation, which involves 9 datasets and
+22 evaluation aspects in total. Tab. 8 summarizes the tasks, datasets, and evaluation aspects considered by each dataset. The
+definition of different aspects can be found in Tab. 1.
+Tasks
+Diag
+Summ
+D2T
+MT
+Dataset
+FED-Diag
+FED-Turn
+SummEval
+Newsroom
+REALSumm
+Q-XSUM
+BAGEL
+SFRES
+MQM-2020
+Aspect
+COH, DIV, FLE, UND,INQ
+CON, INF, LIK, DEP, ERR
+INT, ENG, SPE, REL,
+COR, SEM, UND, FLU
+COH, CON, FLU,REL
+FLU, REL, INF, COH
+COV
+FAC
+FLU, REL, INF
+FLU, REL, INF
+FLU, COH, INF
+Table 8. An overview of tasks, datasets, and evaluation aspects. Summ. denote the text summarization task, D2T denotes the Data-to-Text
+task, MT denotes the machine translation. Tab. 1 summarized the definitions of the aspects explored in this work.
+Dialogue Response Generation aims to automatically generate an engaging and informative response based on the
+dialogue history. (1) FED (Mehri & Eskénazi, 2020) collects 124 conversations, including both human-machine (Meena (Adi-
+wardana et al., 2020), Mitsuku5 ) and human-human dialogues, and manually annotated 9 and 11 evaluation aspects at the
+turn- and dialogue-level, respectively.
+Text Summarization is a task of automatically generating an informative and fluent summary for a given long text. Here,
+we consider the following four datasets covering 6 evaluation aspects: semantic coverage, informativeness, relevance,
+5
+https://medium.com/pandorabots-blog/mitsuku-wins-loebner-prize-2018-3e8d98c5f2a7
+GPTScore: Evaluate as You Desire
+fluency, coherence, and factuality. (1) SummEval (Bhandari et al., 2020) collects human judgments on 16 model-generated
+summaries on the CNN/Daily Mail dataset, covering aspects of coherence, consistency, fluency, and relevance. (2)
+REALSumm (Bhandari et al., 2020) evaluates the reliability of automatic metrics by measuring the pyramid recall of text
+generated by 25 systems. (3) NEWSROOM (Grusky et al., 2018) covers news, sports, entertainment, finance, and other topics
+and evaluates the quality of summaries generated by 7 systems, including informativeness, relevance, fluency, and coherence.
+(4) QAGS_XSUM (Wang et al., 2020) is another dataset focusing on the factuality aspect. It has 239 samples from XSUM
+and their summaries are generated by a fine-tuned BART model.
+Data-to-Text aims to automatically generate a fluent and factual description for a given table. (1) BAGEL (Mairesse et al.,
+2010) contains 202 samples about restaurants in Cambridge. (2) SFRES (Wen et al., 2015) contains 581 samples about
+restaurants in San Francisco. These two datasets consider three evaluation aspects: informativeness, naturalness (relevance),
+and quality (fluency).
+Machine Translation aims to translate a sentence from one language to another. We consider a sub-datasets of Mul-
+tidimensional Quality Metrics (MQM) (Freitag et al., 2021), namely, MQM-2020 (Chinese->English). Due to limited
+annotations, here, we only consider three evaluation aspects: accuracy, fluency, and MQM with diverse scores.
+\n............\n
+B. Tasks, Datasets, and Aspects
+To achieve a more comprehensive evaluation, in this paper, we cover a broad range of natural language generation tasks:
+Dialogue Response Generation, Text Summarization, Data-to-Text, and Machine Translation, which involves 9 datasets and
+22 evaluation aspects in total. Tab. 8 summarizes the tasks, datasets, and evaluation aspects considered by each dataset. The
+definition of different aspects can be found in Tab. 1.
+Tasks
+Diag
+Summ
+D2T
+MT
+Dataset
+FED-Diag
+FED-Turn
+SummEval
+Newsroom
+REALSumm
+Q-XSUM
+BAGEL
+SFRES
+MQM-2020
+Aspect
+COH, DIV, FLE, UND,INQ
+CON, INF, LIK, DEP, ERR
+INT, ENG, SPE, REL,
+COR, SEM, UND, FLU
+COH, CON, FLU,REL
+FLU, REL, INF, COH
+COV
+FAC
+FLU, REL, INF
+FLU, REL, INF
+FLU, COH, INF
+Table 8. An overview of tasks, datasets, and evaluation aspects. Summ. denote the text summarization task, D2T denotes the Data-to-Text
+task, MT denotes the machine translation. Tab. 1 summarized the definitions of the aspects explored in this work.
+Dialogue Response Generation aims to automatically generate an engaging and informative response based on the
+dialogue history. (1) FED (Mehri & Eskénazi, 2020) collects 124 conversations, including both human-machine (Meena (Adi-
+wardana et al., 2020), Mitsuku5 ) and human-human dialogues, and manually annotated 9 and 11 evaluation aspects at the
+turn- and dialogue-level, respectively.
+Text Summarization is a task of automatically generating an informative and fluent summary for a given long text. Here,
+we consider the following four datasets covering 6 evaluation aspects: semantic coverage, informativeness, relevance,
+5
+https://medium.com/pandorabots-blog/mitsuku-wins-loebner-prize-2018-3e8d98c5f2a7
+GPTScore: Evaluate as You Desire
+fluency, coherence, and factuality. (1) SummEval (Bhandari et al., 2020) collects human judgments on 16 model-generated
+summaries on the CNN/Daily Mail dataset, covering aspects of coherence, consistency, fluency, and relevance. (2)
+REALSumm (Bhandari et al., 2020) evaluates the reliability of automatic metrics by measuring the pyramid recall of text
+generated by 25 systems. (3) NEWSROOM (Grusky et al., 2018) covers news, sports, entertainment, finance, and other topics
+and evaluates the quality of summaries generated by 7 systems, including informativeness, relevance, fluency, and coherence.
+(4) QAGS_XSUM (Wang et al., 2020) is another dataset focusing on the factuality aspect. It has 239 samples from XSUM
+and their summaries are generated by a fine-tuned BART model.
+Data-to-Text aims to automatically generate a fluent and factual description for a given table. (1) BAGEL (Mairesse et al.,
+2010) contains 202 samples about restaurants in Cambridge. (2) SFRES (Wen et al., 2015) contains 581 samples about
+restaurants in San Francisco. These two datasets consider three evaluation aspects: informativeness, naturalness (relevance),
+and quality (fluency).
+Machine Translation aims to translate a sentence from one language to another. We consider a sub-datasets of Mul-
+tidimensional Quality Metrics (MQM) (Freitag et al., 2021), namely, MQM-2020 (Chinese->English). Due to limited
+annotations, here, we only consider three evaluation aspects: accuracy, fluency, and MQM with diverse scores.
+\n............\n
+X
+ Aspect
+ Aspect Definition
+ Spear
+1
+2
+3
+4
+5
+6
+7
+8
+Interesting (INT)
+Engaging (ENG)
+Specific (SPE)
+Correct (COR)
+Relevant (REL)
+Understandable (UND)
+Semantically appropriate (SEM)
+Fluent (FLU)
+Is this response interesting to the convsersation?
+Is this an interesting response that is engaging?
+Is this an interesting response that is specific and engaging?
+Is this an interesting response that is engaging, specific, and correct?
+Is this an interesting response that is specific, engaging, relevant, and correct?
+Is this an interesting response that is specific, engaging, relevant, correct,
+and understandable?
+Is this an interesting response that is specific, engaging, relevant, correct,
+understandable, and semantically appropriate?
+Is this an interesting response that is specific, engaging, relevant, correct,
+understandable, semantically appropriate, and fluent?
+36.9
+40.7
+48.6
+50.0
+51.3
+50.9
+51.4
+50.3
+Table 10. The aspect definition and Spearman correlation of INT. X denotes the number of aspects combined with the INT. The scoring
+model is GPT3-c01.
+\n............\n
+X
+ Aspect
+ Aspect Definition
+ Spear
+1
+2
+3
+4
+5
+6
+7
+8
+Interesting (INT)
+Engaging (ENG)
+Specific (SPE)
+Correct (COR)
+Relevant (REL)
+Understandable (UND)
+Semantically appropriate (SEM)
+Fluent (FLU)
+Is this response interesting to the convsersation?
+Is this an interesting response that is engaging?
+Is this an interesting response that is specific and engaging?
+Is this an interesting response that is engaging, specific, and correct?
+Is this an interesting response that is specific, engaging, relevant, and correct?
+Is this an interesting response that is specific, engaging, relevant, correct,
+and understandable?
+Is this an interesting response that is specific, engaging, relevant, correct,
+understandable, and semantically appropriate?
+Is this an interesting response that is specific, engaging, relevant, correct,
+understandable, semantically appropriate, and fluent?
+36.9
+40.7
+48.6
+50.0
+51.3
+50.9
+51.4
+50.3
+Table 10. The aspect definition and Spearman correlation of INT. X denotes the number of aspects combined with the INT. The scoring
+model is GPT3-c01.
+\n............\n
+Aspect Function
+ Instruction
+Text Summarization
+src->hypo Generate a summary with consistent facts for the following text: {src}\n\nTl;dr{hypo}
+FAC
+ref<->hypo Rewrite the following text with consistent facts. {ref/hypo} In other words, {hypo/ref}
+src->hypo
+ Generate a summary with as much semantic coverage as possible for the following text:
+COV
+{src}\n\nTl;dr{hypo}
+ref<->hypo Rewrite the following text with the same semantics. {ref/hypo} In other words, {hypo/ref}
+src->hypo Generate factually consistent summary for the following text: {src}\n\nTl;dr{hypo}
+CON
+ref<->hypo Rewrite the following text with consistent facts. {ref/hypo} In other words, {hypo/ref}
+src->hypo
+ Generate an informative summary that captures the key points of the following text:
+INF
+{src}\n\nTl;dr{hypo}
+ref<->hypo Rewrite the following text with its core information. {ref/hypo} In other words, {hypo/ref}
+src->hypo Generate a coherent summary for the following text: {src}\n\nTl;dr{hypo}
+COH
+ref<->hypo Rewrite the following text into a coherent text. {ref/hypo} In other words, {hypo/ref}
+src->hypo Generate a relevant summary with consistent details for the following text: {src}\n\nTl;dr{hypo}
+REL
+ref<->hypo Rewrite the following text with consistent details. {ref/hypo} In other words, {hypo/ref}
+src->hypo Generate a fluent and grammatical summary for the following text: {src}\n\nTl;dr{hypo}
+FLU
+ref<->hypo Rewrite the following text into a fluent and grammatical text. {ref/hypo} In other words, {hypo/ref}
+Machine Translation
+Acc
+FLU
+MQMref<->hypo Rewrite the following text with its core information and consistent facts:{ref/hypo} In other words,
+{hypo/ref}
+ref<->hypo Rewrite the following text to make it more grammatical and well-written:{ref/hypo} In other words,
+{hypo/ref}
+ref<->hypo Rewrite the following text into high-quality text with its core information:{ref/hypo} In other words,
+{hypo/ref}
+Data to Text
+INF
+NAT
+FLU
+ref<->hypo Convert the following text to another expression that preserves key information:\n\n{ref/hypo} In
+other words, {hypo/ref}
+ref<->hypo Convert the following text into another expression that is human-like and natural:\n\n{ref/hypo} In
+other words, {hypo/ref}
+ref<->hypo Convert the following text into another expression that preserves key information and is human-like
+and natural:\n\n{ref/hypo} In other words, {hypo/ref}
+Table 11. Instruction design on different aspects for text summarization, machine translation, and data-to-text tasks. src, hypo, and ref
+denote the source text, hypothesis text, and reference text, respectively. a->b (a<-b) denotes to evaluate the quality of b (a) text based on
+the given a (b) text.
+\n............\n
+Aspect Function
+ Instruction
+Text Summarization
+src->hypo Generate a summary with consistent facts for the following text: {src}\n\nTl;dr{hypo}
+FAC
+ref<->hypo Rewrite the following text with consistent facts. {ref/hypo} In other words, {hypo/ref}
+src->hypo
+ Generate a summary with as much semantic coverage as possible for the following text:
+COV
+{src}\n\nTl;dr{hypo}
+ref<->hypo Rewrite the following text with the same semantics. {ref/hypo} In other words, {hypo/ref}
+src->hypo Generate factually consistent summary for the following text: {src}\n\nTl;dr{hypo}
+CON
+ref<->hypo Rewrite the following text with consistent facts. {ref/hypo} In other words, {hypo/ref}
+src->hypo
+ Generate an informative summary that captures the key points of the following text:
+INF
+{src}\n\nTl;dr{hypo}
+ref<->hypo Rewrite the following text with its core information. {ref/hypo} In other words, {hypo/ref}
+src->hypo Generate a coherent summary for the following text: {src}\n\nTl;dr{hypo}
+COH
+ref<->hypo Rewrite the following text into a coherent text. {ref/hypo} In other words, {hypo/ref}
+src->hypo Generate a relevant summary with consistent details for the following text: {src}\n\nTl;dr{hypo}
+REL
+ref<->hypo Rewrite the following text with consistent details. {ref/hypo} In other words, {hypo/ref}
+src->hypo Generate a fluent and grammatical summary for the following text: {src}\n\nTl;dr{hypo}
+FLU
+ref<->hypo Rewrite the following text into a fluent and grammatical text. {ref/hypo} In other words, {hypo/ref}
+Machine Translation
+Acc
+FLU
+MQMref<->hypo Rewrite the following text with its core information and consistent facts:{ref/hypo} In other words,
+{hypo/ref}
+ref<->hypo Rewrite the following text to make it more grammatical and well-written:{ref/hypo} In other words,
+{hypo/ref}
+ref<->hypo Rewrite the following text into high-quality text with its core information:{ref/hypo} In other words,
+{hypo/ref}
+Data to Text
+INF
+NAT
+FLU
+ref<->hypo Convert the following text to another expression that preserves key information:\n\n{ref/hypo} In
+other words, {hypo/ref}
+ref<->hypo Convert the following text into another expression that is human-like and natural:\n\n{ref/hypo} In
+other words, {hypo/ref}
+ref<->hypo Convert the following text into another expression that preserves key information and is human-like
+and natural:\n\n{ref/hypo} In other words, {hypo/ref}
+Table 11. Instruction design on different aspects for text summarization, machine translation, and data-to-text tasks. src, hypo, and ref
+denote the source text, hypothesis text, and reference text, respectively. a->b (a<-b) denotes to evaluate the quality of b (a) text based on
+the given a (b) text.
+\n............\n
+AspectFED Turn-Level
+INT
+ENG
+UND
+REL
+SPE
+COR
+SEM
+FLU
+FED Dialog-Level
+COH
+DIV
+FLE
+UND
+INQ
+CON
+INF
+LIK
+DEP
+ERR
+Instruction
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI interesting? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI engaging? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI understandable? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI relevant to the conversation? (a) Yes. (b) No.backslashnConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI generic or specific to the conversation? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI correct to conversations? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.]
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI semantically appropriate? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI fluently written? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Is the AI coherent
+and maintains a good conversation flow throughout the conversation? (a) Yes. (b) No.\nConversation:
+{History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Is there diversity in
+the AI responses? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Is the AI flexible and
+adaptable to human and their interests? (a) Yes. (b) No. \nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Does the AI seem to
+understand the human? (a) Yes. (b) No. \nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Is the AI inquisitive
+throughout the conversation? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI consistent in the information it provides throughout the conversation? (a) Yes. (b) No.\nConversation:
+{History}\nAnswer: Yes.
+nswer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI informative throughout the conversation? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Does the AI display a
+likeable personality? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Does the AI discuss
+topics in depth? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Is the AI able to
+recover from errors that it makes? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Table 12. Instruction design on various aspects for dialogue response generation task at the turn- and dialogue-level. History indicates the
+conversation history. We convert the evaluation of the response generation task as a question-answering task, and the aspect definition is
+incorporated into the question of the question-answering task.
+\n............\n
+AspectFED Turn-Level
+INT
+ENG
+UND
+REL
+SPE
+COR
+SEM
+FLU
+FED Dialog-Level
+COH
+DIV
+FLE
+UND
+INQ
+CON
+INF
+LIK
+DEP
+ERR
+Instruction
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI interesting? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI engaging? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI understandable? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI relevant to the conversation? (a) Yes. (b) No.backslashnConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI generic or specific to the conversation? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI correct to conversations? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.]
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI semantically appropriate? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI fluently written? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Is the AI coherent
+and maintains a good conversation flow throughout the conversation? (a) Yes. (b) No.\nConversation:
+{History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Is there diversity in
+the AI responses? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Is the AI flexible and
+adaptable to human and their interests? (a) Yes. (b) No. \nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Does the AI seem to
+understand the human? (a) Yes. (b) No. \nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Is the AI inquisitive
+throughout the conversation? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI consistent in the information it provides throughout the conversation? (a) Yes. (b) No.\nConversation:
+{History}\nAnswer: Yes.
+nswer the question based on the conversation between a human and AI.\nQuestion: Are the responses of
+AI informative throughout the conversation? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Does the AI display a
+likeable personality? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Does the AI discuss
+topics in depth? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Answer the question based on the conversation between a human and AI.\nQuestion: Is the AI able to
+recover from errors that it makes? (a) Yes. (b) No.\nConversation: {History}\nAnswer: Yes.
+Table 12. Instruction design on various aspects for dialogue response generation task at the turn- and dialogue-level. History indicates the
+conversation history. We convert the evaluation of the response generation task as a question-answering task, and the aspect definition is
+incorporated into the question of the question-answering task.
+\n............\n
+/tmp/tmp.R2VM897pL1.txt
+\n............\n
+/tmp/tmp.R2VM897pL1.txt
+\n............\n
+https://paperswithcode.com/paper/gptscore-evaluate-as-you-desire
+\n............\n
+https://paperswithcode.com/paper/gptscore-evaluate-as-you-desire
+\n............\n
+/tmp/tmp.R2VM897pL1.txt
+\n............\n
+https://paperswithcode.com/paper/gptscore-evaluate-as-you-desire
+\n............\n
+/tmp/tmp.R2VM897pL1.txt
+\n............\n
+assessing the
+quality of the generation is an even more ardu-
+ous task than the generation itself, and this is-
+sue has not been given adequate consideration
+recently. This paper proposes a novel evalua-
+tion framework, GPTS CORE, which utilizes the
+emergent abilities (e.g., zero-shot instruction) of
+generative pre-trained models to score generated
+texts.
+\n............\n
+ given a text generated from a certain context,
+and desirable evaluation aspects (e.g., fluency), the high-
+level idea of the proposed framework is that the higher-
+quality text of a certain aspect will be more likely generated
+than unqualified ones based on the given context, where the
+GPTScore: Evaluate as You Desire
+Task Specification
+Generate a summary
+for the following text.
+Aspect Definition
+REL The details pr-
+ovided by the genera-
+ted text are consistent
+with the details in the
+source ...
+ text.
+INF
+ ...
+Template
+{Task_Specification}
+{Aspect_Definition]}
+Text: {Text}
+Tl;dr: {Summ}
+EvaluationText: ...
+Summ: ...
+Sample
+DemonstratedINF
+REL
+Samples
+Text: ...
+Summ: ...
+INF
+REL
+Generate a relevant summary
+with consistent details for the
+following text.
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+...
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+DemoSample
+GPTScore
+INF
+ REL
+0.8
+ ...
+ 0.9
+Evaluation Protocol
+ Input
+ Scoring
+Figure 2. The framework of GPTSCORE. We include two evaluation aspects relevance (REL) and informative (INF) in this figure and use
+the evaluation of relevance (REL) of the text summarization task to exemplify our framework.
+“likely” can be measured by the conditional generation prob-
+ability. As illustrated in Fig. 2, to capture users’ true desires,
+an evaluation protocol will be initially established based on
+(a) the task specification, which typically outlines how the
+text is generated (e.g., generate a response for a human based
+on the conversation.) (b) aspect definition that documents
+the details of desirable evaluation aspects (e.g., the response
+should be intuitive to understand). Subsequently, each eval-
+uation sample will be presented with the evaluated protocol
+with optionally moderate exemplar samples, which could
+facilitate the model’s learning. Lastly, a large generative
+pre-trained model will be used to calculate how likely the
+text could be generated based on the above evaluation pro-
+tocol, thus giving rise to our model’s name: GPTS CORE.
+\n............\n
+ given a text generated from a certain context,
+and desirable evaluation aspects (e.g., fluency), the high-
+level idea of the proposed framework is that the higher-
+quality text of a certain aspect will be more likely generated
+than unqualified ones based on the given context, where the
+GPTScore: Evaluate as You Desire
+Task Specification
+Generate a summary
+for the following text.
+Aspect Definition
+REL The details pr-
+ovided by the genera-
+ted text are consistent
+with the details in the
+source ...
+ text.
+INF
+ ...
+Template
+{Task_Specification}
+{Aspect_Definition]}
+Text: {Text}
+Tl;dr: {Summ}
+EvaluationText: ...
+Summ: ...
+Sample
+DemonstratedINF
+REL
+Samples
+Text: ...
+Summ: ...
+INF
+REL
+Generate a relevant summary
+with consistent details for the
+following text.
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+...
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+DemoSample
+GPTScore
+INF
+ REL
+0.8
+ ...
+ 0.9
+Evaluation Protocol
+ Input
+ Scoring
+Figure 2. The framework of GPTSCORE. We include two evaluation aspects relevance (REL) and informative (INF) in this figure and use
+the evaluation of relevance (REL) of the text summarization task to exemplify our framework.
+“likely” can be measured by the conditional generation prob-
+ability. As illustrated in Fig. 2, to capture users’ true desires,
+an evaluation protocol will be initially established based on
+(a) the task specification, which typically outlines how the
+text is generated (e.g., generate a response for a human based
+on the conversation.) (b) aspect definition that documents
+the details of desirable evaluation aspects (e.g., the response
+should be intuitive to understand). Subsequently, each eval-
+uation sample will be presented with the evaluated protocol
+with optionally moderate exemplar samples, which could
+facilitate the model’s learning. Lastly, a large generative
+pre-trained model will be used to calculate how likely the
+text could be generated based on the above evaluation pro-
+tocol, thus giving rise to our model’s name: GPTS CORE.
+\n............\n
+Experimentally, we ran through almost all common nat-
+ural language generation tasks in NLP, and the results
+showed the power of this new paradigm. The main ob-
+servations are listed as follows: (1) Evaluating texts with
+generative pre-training models can be more reliable when
+instructed by the definition of task and aspect, provid-
+ing a degree of flexibility to accommodate various eval-
+uation criteria. Furthermore, incorporating exemplified
+samples with in-context learning will further enhance the
+process. (2) Different evaluation aspects exhibit certain
+correlations. Combining definitions with other highly
+correlated aspects can improve evaluation performance.
+(3) The performance of GPT3-text-davinci-003,
+which is tuned based on human feedback, is inferior to
+GPT3-text-davinci-001 in the majority of the eval-
+uation settings, necessitating deep explorations on the work-
+ing mechanism of human feedback-based instruction learn-
+ing (e.g., when it will fail).
+\n............\n
+Experimentally, we ran through almost all common nat-
+ural language generation tasks in NLP, and the results
+showed the power of this new paradigm. The main ob-
+servations are listed as follows: (1) Evaluating texts with
+generative pre-training models can be more reliable when
+instructed by the definition of task and aspect, provid-
+ing a degree of flexibility to accommodate various eval-
+uation criteria. Furthermore, incorporating exemplified
+samples with in-context learning will further enhance the
+process. (2) Different evaluation aspects exhibit certain
+correlations. Combining definitions with other highly
+correlated aspects can improve evaluation performance.
+(3) The performance of GPT3-text-davinci-003,
+which is tuned based on human feedback, is inferior to
+GPT3-text-davinci-001 in the majority of the eval-
+uation settings, necessitating deep explorations on the work-
+ing mechanism of human feedback-based instruction learn-
+ing (e.g., when it will fail).
+\n............\n
+2. Preliminaries
+2.1. Text Evaluation
+Text evaluation aims to assess the quality of hypothesis
+text h in terms of certain aspect a (e.g., fluency), which is
+either measured manually with different protocols (Nenkova
+& Passonneau, 2004; Bhandari et al., 2020; Fabbri et al.,
+2021; Liu et al., 2022) or quantified by diverse automated
+metrics (Lin, 2004; Papineni et al., 2002; Zhao et al., 2019;
+Zhang et al., 2020; Yuan et al., 2021).
+y = f (h, a, S)
+ (1)
+where (1) h represents the text to be evaluated (hypothesis
+text, e.g., generated summary in text summarization task).
+(2) a denotes the evaluation aspect (e.g., fluency). (3) S is a
+collection of additional texts that are optionally used based
+on different scenarios. For example, it could be a source
+document or a reference summary in the text summarization
+task. (4) Function f (·) could be instantiated as a human
+evaluation process or automated evaluation metrics.
+\n............\n
+2.2. Meta Evaluation
+Meta evaluation aims to evaluate the reliability of auto-
+mated metrics by calculating how well automated scores
+(yauto ) correlate with human judgment (yhuman ) using correla-
+tion functions g(yauto , yhuman ) such as spearman correlation.
+In this work, we adopt two widely-used correlation mea-
+sures: (1) Spearman correlation (ρ) (Zar, 2005) measures
+the monotonic relationship between two variables based on
+their ranked values. (2) Pearson correlation (r) (Mukaka,
+2012) measures the linear relationship based on the raw data
+values of two variables.
+\n............\n
+2.2. Meta Evaluation
+Meta evaluation aims to evaluate the reliability of auto-
+mated metrics by calculating how well automated scores
+(yauto ) correlate with human judgment (yhuman ) using correla-
+tion functions g(yauto , yhuman ) such as spearman correlation.
+In this work, we adopt two widely-used correlation mea-
+sures: (1) Spearman correlation (ρ) (Zar, 2005) measures
+the monotonic relationship between two variables based on
+their ranked values. (2) Pearson correlation (r) (Mukaka,
+2012) measures the linear relationship based on the raw data
+values of two variables.
+\n............\n
+2.3. Evaluation Strategy
+Evaluation strategies define different aggregation methods
+when we calculate the correlation scores. Specifically, sup-
+pose that for each source text si , i ∈ [1, 2, · · · , n] (e.g.,
+documents in text summarization task or dialogue histories
+for dialogue generation task), there are J system outputs
+hi,j , where j ∈ [1, 2, · · · , J]. fauto is an automatic scoring
+function (e.g., ROUGE (Lin, 2004)), and fhuman is the gold
+human scoring function. For a given evaluation aspect a,
+the meta-evaluation metric F can be formulated as follows.
+Sample-level defines that a correlation value is calculated
+for each sample separately based on outputs of multiple
+systems, then averaged across all samples.
+\n............\n
+assessing the
+quality of the generation is an even more ardu-
+ous task than the generation itself, and this is-
+sue has not been given adequate consideration
+recently. This paper proposes a novel evalua-
+tion framework, GPTS CORE, which utilizes the
+emergent abilities (e.g., zero-shot instruction) of
+generative pre-trained models to score generated
+texts.
+\n............\n
+ given a text generated from a certain context,
+and desirable evaluation aspects (e.g., fluency), the high-
+level idea of the proposed framework is that the higher-
+quality text of a certain aspect will be more likely generated
+than unqualified ones based on the given context, where the
+GPTScore: Evaluate as You Desire
+Task Specification
+Generate a summary
+for the following text.
+Aspect Definition
+REL The details pr-
+ovided by the genera-
+ted text are consistent
+with the details in the
+source ...
+ text.
+INF
+ ...
+Template
+{Task_Specification}
+{Aspect_Definition]}
+Text: {Text}
+Tl;dr: {Summ}
+EvaluationText: ...
+Summ: ...
+Sample
+DemonstratedINF
+REL
+Samples
+Text: ...
+Summ: ...
+INF
+REL
+Generate a relevant summary
+with consistent details for the
+following text.
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+...
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+DemoSample
+GPTScore
+INF
+ REL
+0.8
+ ...
+ 0.9
+Evaluation Protocol
+ Input
+ Scoring
+Figure 2. The framework of GPTSCORE. We include two evaluation aspects relevance (REL) and informative (INF) in this figure and use
+the evaluation of relevance (REL) of the text summarization task to exemplify our framework.
+“likely” can be measured by the conditional generation prob-
+ability. As illustrated in Fig. 2, to capture users’ true desires,
+an evaluation protocol will be initially established based on
+(a) the task specification, which typically outlines how the
+text is generated (e.g., generate a response for a human based
+on the conversation.) (b) aspect definition that documents
+the details of desirable evaluation aspects (e.g., the response
+should be intuitive to understand). Subsequently, each eval-
+uation sample will be presented with the evaluated protocol
+with optionally moderate exemplar samples, which could
+facilitate the model’s learning. Lastly, a large generative
+pre-trained model will be used to calculate how likely the
+text could be generated based on the above evaluation pro-
+tocol, thus giving rise to our model’s name: GPTS CORE.
+\n............\n
+ given a text generated from a certain context,
+and desirable evaluation aspects (e.g., fluency), the high-
+level idea of the proposed framework is that the higher-
+quality text of a certain aspect will be more likely generated
+than unqualified ones based on the given context, where the
+GPTScore: Evaluate as You Desire
+Task Specification
+Generate a summary
+for the following text.
+Aspect Definition
+REL The details pr-
+ovided by the genera-
+ted text are consistent
+with the details in the
+source ...
+ text.
+INF
+ ...
+Template
+{Task_Specification}
+{Aspect_Definition]}
+Text: {Text}
+Tl;dr: {Summ}
+EvaluationText: ...
+Summ: ...
+Sample
+DemonstratedINF
+REL
+Samples
+Text: ...
+Summ: ...
+INF
+REL
+Generate a relevant summary
+with consistent details for the
+following text.
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+...
+Text: {Text} Tl;dr: {Summ}
+Text: {Text} Tl;dr: {Summ}
+DemoSample
+GPTScore
+INF
+ REL
+0.8
+ ...
+ 0.9
+Evaluation Protocol
+ Input
+ Scoring
+Figure 2. The framework of GPTSCORE. We include two evaluation aspects relevance (REL) and informative (INF) in this figure and use
+the evaluation of relevance (REL) of the text summarization task to exemplify our framework.
+“likely” can be measured by the conditional generation prob-
+ability. As illustrated in Fig. 2, to capture users’ true desires,
+an evaluation protocol will be initially established based on
+(a) the task specification, which typically outlines how the
+text is generated (e.g., generate a response for a human based
+on the conversation.) (b) aspect definition that documents
+the details of desirable evaluation aspects (e.g., the response
+should be intuitive to understand). Subsequently, each eval-
+uation sample will be presented with the evaluated protocol
+with optionally moderate exemplar samples, which could
+facilitate the model’s learning. Lastly, a large generative
+pre-trained model will be used to calculate how likely the
+text could be generated based on the above evaluation pro-
+tocol, thus giving rise to our model’s name: GPTS CORE.
+\n............\n
+Experimentally, we ran through almost all common nat-
+ural language generation tasks in NLP, and the results
+showed the power of this new paradigm. The main ob-
+servations are listed as follows: (1) Evaluating texts with
+generative pre-training models can be more reliable when
+instructed by the definition of task and aspect, provid-
+ing a degree of flexibility to accommodate various eval-
+uation criteria. Furthermore, incorporating exemplified
+samples with in-context learning will further enhance the
+process. (2) Different evaluation aspects exhibit certain
+correlations. Combining definitions with other highly
+correlated aspects can improve evaluation performance.
+(3) The performance of GPT3-text-davinci-003,
+which is tuned based on human feedback, is inferior to
+GPT3-text-davinci-001 in the majority of the eval-
+uation settings, necessitating deep explorations on the work-
+ing mechanism of human feedback-based instruction learn-
+ing (e.g., when it will fail).
+\n............\n
+Experimentally, we ran through almost all common nat-
+ural language generation tasks in NLP, and the results
+showed the power of this new paradigm. The main ob-
+servations are listed as follows: (1) Evaluating texts with
+generative pre-training models can be more reliable when
+instructed by the definition of task and aspect, provid-
+ing a degree of flexibility to accommodate various eval-
+uation criteria. Furthermore, incorporating exemplified
+samples with in-context learning will further enhance the
+process. (2) Different evaluation aspects exhibit certain
+correlations. Combining definitions with other highly
+correlated aspects can improve evaluation performance.
+(3) The performance of GPT3-text-davinci-003,
+which is tuned based on human feedback, is inferior to
+GPT3-text-davinci-001 in the majority of the eval-
+uation settings, necessitating deep explorations on the work-
+ing mechanism of human feedback-based instruction learn-
+ing (e.g., when it will fail).
+\n............\n
+2. Preliminaries
+2.1. Text Evaluation
+Text evaluation aims to assess the quality of hypothesis
+text h in terms of certain aspect a (e.g., fluency), which is
+either measured manually with different protocols (Nenkova
+& Passonneau, 2004; Bhandari et al., 2020; Fabbri et al.,
+2021; Liu et al., 2022) or quantified by diverse automated
+metrics (Lin, 2004; Papineni et al., 2002; Zhao et al., 2019;
+Zhang et al., 2020; Yuan et al., 2021).
+y = f (h, a, S)
+ (1)
+where (1) h represents the text to be evaluated (hypothesis
+text, e.g., generated summary in text summarization task).
+(2) a denotes the evaluation aspect (e.g., fluency). (3) S is a
+collection of additional texts that are optionally used based
+on different scenarios. For example, it could be a source
+document or a reference summary in the text summarization
+task. (4) Function f (·) could be instantiated as a human
+evaluation process or automated evaluation metrics.
+\n............\n
+2.2. Meta Evaluation
+Meta evaluation aims to evaluate the reliability of auto-
+mated metrics by calculating how well automated scores
+(yauto ) correlate with human judgment (yhuman ) using correla-
+tion functions g(yauto , yhuman ) such as spearman correlation.
+In this work, we adopt two widely-used correlation mea-
+sures: (1) Spearman correlation (ρ) (Zar, 2005) measures
+the monotonic relationship between two variables based on
+their ranked values. (2) Pearson correlation (r) (Mukaka,
+2012) measures the linear relationship based on the raw data
+values of two variables.
+\n............\n
+2.2. Meta Evaluation
+Meta evaluation aims to evaluate the reliability of auto-
+mated metrics by calculating how well automated scores
+(yauto ) correlate with human judgment (yhuman ) using correla-
+tion functions g(yauto , yhuman ) such as spearman correlation.
+In this work, we adopt two widely-used correlation mea-
+sures: (1) Spearman correlation (ρ) (Zar, 2005) measures
+the monotonic relationship between two variables based on
+their ranked values. (2) Pearson correlation (r) (Mukaka,
+2012) measures the linear relationship based on the raw data
+values of two variables.
+\n............\n
+2.3. Evaluation Strategy
+Evaluation strategies define different aggregation methods
+when we calculate the correlation scores. Specifically, sup-
+pose that for each source text si , i ∈ [1, 2, · · · , n] (e.g.,
+documents in text summarization task or dialogue histories
+for dialogue generation task), there are J system outputs
+hi,j , where j ∈ [1, 2, · · · , J]. fauto is an automatic scoring
+function (e.g., ROUGE (Lin, 2004)), and fhuman is the gold
+human scoring function. For a given evaluation aspect a,
+the meta-evaluation metric F can be formulated as follows.
+Sample-level defines that a correlation value is calculated
+for each sample separately based on outputs of multiple
+systems, then averaged across all samples.
+\n............\n
+GPTScore: Evaluate as You Desire
+\n............\n
+GPTScore: Evaluate as You Desire
+\n............\n
+
+In this work, we select the evaluation strategy for a specific
+task based on previous works (Yuan et al., 2021; Zhang et al.,
+2022a). We use the sample-level evaluation strategy for text
+summarization, data-to-text, and machine translation tasks.
+For the dialogue response generation task, the dataset-level
+evaluation strategy is utilized.
+\n............\n
+Emergent Ability Recent works progressively reveal a va-
+riety of emergent abilities of generative pre-trained lan-
+guage models with appropriate tuning or prompting meth-
+ods, such as in-context learning (Min et al., 2022), chain-
+of-thought reasoning (Wei et al., 2022), and zero-shot in-
+struction (Ouyang et al., 2022). One core commonality of
+these abilities is to allow for handling customized require-
+ments with a few or even zero annotated examples. It’s
+the appearance of these abilities that allows us to re-invent
+a new way for text evaluation–evaluating from the textual
+description, which can achieve customizable, multi-faceted,
+and train-free evaluation.
+\n............\n
+Emergent Ability Recent works progressively reveal a va-
+riety of emergent abilities of generative pre-trained lan-
+guage models with appropriate tuning or prompting meth-
+ods, such as in-context learning (Min et al., 2022), chain-
+of-thought reasoning (Wei et al., 2022), and zero-shot in-
+struction (Ouyang et al., 2022). One core commonality of
+these abilities is to allow for handling customized require-
+ments with a few or even zero annotated examples. It’s
+the appearance of these abilities that allows us to re-invent
+a new way for text evaluation–evaluating from the textual
+description, which can achieve customizable, multi-faceted,
+and train-free evaluation.
+\n............\n
+The core idea of GPTS CORE is that a generative pre-training
+model will assign a higher probability of high-quality gen-
+erated text following a given instruction and context. In
+our method, the instruction is composed of the task descrip-
+tion d and the aspect definition a. 
+\n............\n
+The core idea of GPTS CORE is that a generative pre-training
+model will assign a higher probability of high-quality gen-
+erated text following a given instruction and context. In
+our method, the instruction is composed of the task descrip-
+tion d and the aspect definition a. 
+\n............\n
+Few-shot with Demonstration
+ The generative pre-
+trained language model can better perform tasks when pre-
+fixed with a few annotated samples (i.e., demonstrations).
+Our proposed framework is flexible in supporting this by
+extending the prompt template T with demonstrations.
+Choice of Prompt Template Prompt templates define
+how task description, aspect definition, and context are
+organized. Minging desirable prompts itself is a non-trivial
+task and there are extensive research works there (Liu
+et al., 2021; Fu et al., 2022). In this work, for the
+GPT3-based model, we opt for prompts that are officially
+provided by OpenAI.2 For instruction-based pre-trained
+2
+https://beta.openai.com/examples
+\n............\n
+Few-shot with Demonstration
+ The generative pre-
+trained language model can better perform tasks when pre-
+fixed with a few annotated samples (i.e., demonstrations).
+Our proposed framework is flexible in supporting this by
+extending the prompt template T with demonstrations.
+Choice of Prompt Template Prompt templates define
+how task description, aspect definition, and context are
+organized. Minging desirable prompts itself is a non-trivial
+task and there are extensive research works there (Liu
+et al., 2021; Fu et al., 2022). In this work, for the
+GPT3-based model, we opt for prompts that are officially
+provided by OpenAI.2 For instruction-based pre-trained
+2
+https://beta.openai.com/examples
+\n............\n
+Aspect
+Semantic Coverage (COV)Factuality (FAC)
+Consistency (CON)
+Informativeness (INF)
+Coherence (COH)
+Relevance (REL)
+Fluency (FLU)
+Accuracy (ACC)
+Multidimensional
+Quality Metrics (MQM)
+Interest (INT)
+Engagement (ENG)
+Specific (SPE)
+Correctness (COR)
+Semantically
+appropriate (SEM)
+Understandability (UND)Error Recovery (ERR)
+Diversity (DIV)
+Depth (DEP)
+Likeability (LIK)
+Flexibility (FLE)
+Inquisitiveness (INQ)
+\n............\n
+
+In this work, we select the evaluation strategy for a specific
+task based on previous works (Yuan et al., 2021; Zhang et al.,
+2022a). We use the sample-level evaluation strategy for text
+summarization, data-to-text, and machine translation tasks.
+For the dialogue response generation task, the dataset-level
+evaluation strategy is utilized.
+\n............\n
+Emergent Ability Recent works progressively reveal a va-
+riety of emergent abilities of generative pre-trained lan-
+guage models with appropriate tuning or prompting meth-
+ods, such as in-context learning (Min et al., 2022), chain-
+of-thought reasoning (Wei et al., 2022), and zero-shot in-
+struction (Ouyang et al., 2022). One core commonality of
+these abilities is to allow for handling customized require-
+ments with a few or even zero annotated examples. It’s
+the appearance of these abilities that allows us to re-invent
+a new way for text evaluation–evaluating from the textual
+description, which can achieve customizable, multi-faceted,
+and train-free evaluation.
+\n............\n
+Emergent Ability Recent works progressively reveal a va-
+riety of emergent abilities of generative pre-trained lan-
+guage models with appropriate tuning or prompting meth-
+ods, such as in-context learning (Min et al., 2022), chain-
+of-thought reasoning (Wei et al., 2022), and zero-shot in-
+struction (Ouyang et al., 2022). One core commonality of
+these abilities is to allow for handling customized require-
+ments with a few or even zero annotated examples. It’s
+the appearance of these abilities that allows us to re-invent
+a new way for text evaluation–evaluating from the textual
+description, which can achieve customizable, multi-faceted,
+and train-free evaluation.
+\n............\n
+The core idea of GPTS CORE is that a generative pre-training
+model will assign a higher probability of high-quality gen-
+erated text following a given instruction and context. In
+our method, the instruction is composed of the task descrip-
+tion d and the aspect definition a. 
+\n............\n
+The core idea of GPTS CORE is that a generative pre-training
+model will assign a higher probability of high-quality gen-
+erated text following a given instruction and context. In
+our method, the instruction is composed of the task descrip-
+tion d and the aspect definition a. 
+\n............\n
+Few-shot with Demonstration
+ The generative pre-
+trained language model can better perform tasks when pre-
+fixed with a few annotated samples (i.e., demonstrations).
+Our proposed framework is flexible in supporting this by
+extending the prompt template T with demonstrations.
+Choice of Prompt Template Prompt templates define
+how task description, aspect definition, and context are
+organized. Minging desirable prompts itself is a non-trivial
+task and there are extensive research works there (Liu
+et al., 2021; Fu et al., 2022). In this work, for the
+GPT3-based model, we opt for prompts that are officially
+provided by OpenAI.2 For instruction-based pre-trained
+2
+https://beta.openai.com/examples
+\n............\n
+Few-shot with Demonstration
+ The generative pre-
+trained language model can better perform tasks when pre-
+fixed with a few annotated samples (i.e., demonstrations).
+Our proposed framework is flexible in supporting this by
+extending the prompt template T with demonstrations.
+Choice of Prompt Template Prompt templates define
+how task description, aspect definition, and context are
+organized. Minging desirable prompts itself is a non-trivial
+task and there are extensive research works there (Liu
+et al., 2021; Fu et al., 2022). In this work, for the
+GPT3-based model, we opt for prompts that are officially
+provided by OpenAI.2 For instruction-based pre-trained
+2
+https://beta.openai.com/examples
+\n............\n
+Aspect
+Semantic Coverage (COV)Factuality (FAC)
+Consistency (CON)
+Informativeness (INF)
+Coherence (COH)
+Relevance (REL)
+Fluency (FLU)
+Accuracy (ACC)
+Multidimensional
+Quality Metrics (MQM)
+Interest (INT)
+Engagement (ENG)
+Specific (SPE)
+Correctness (COR)
+Semantically
+appropriate (SEM)
+Understandability (UND)Error Recovery (ERR)
+Diversity (DIV)
+Depth (DEP)
+Likeability (LIK)
+Flexibility (FLE)
+Inquisitiveness (INQ)

@@ -6,6 +6,6 @@ for i in $(shuf -i 1-230 -n 2); do
     evaluation="$(llm -m "$model_judge" --system "$(cat gemini-rubric-xml.md)" "$(python llm-logs-group-getter.py $group_id)
 **IMPORTANT NOTE:** Always write numerical score AFTER justifications")"
     
-    python import-evaluations-scores.py "$evaluation" ~/shelllm.db $group_id $model_judge
+    python import-evaluations-scores-v3.py "$evaluation" /home/ShellLM/Projects/undecidability/agents/rubrics/shelllm.db $group_id $model_judge
     
 done

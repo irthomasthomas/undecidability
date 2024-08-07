@@ -32,6 +32,13 @@ CREATE TABLE IF NOT EXISTS response_eval (
     FOREIGN KEY (evaluation_id) REFERENCES conversation_eval (evaluation_id)
 );
 
+CREATE TABLE IF NOT EXSISTS rubric (
+    rubric_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    rubric_text TEXT,
+    model_judge TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 COMMIT;
 """
 
@@ -85,21 +92,21 @@ def parse_and_store(document, database_path, group_id, model_judge):
             overall_xml = overall_match.group(1)
             overall_data = extract_conversation_data(overall_xml)
             overall_data = (model_judge, group_id, total_prompts) + overall_data
-            c.execute('INSERT INTO conversation_eval (model_judge, group_id, total_prompts, goal_completion, coherence, learning, insight, creativity) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', overall_data)
+            c.execute('INSERT INTO conversation_eval (model_judge, group_id, total_prompts, goal_completion, coherence, learning, insight, creativity, emergence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', overall_data)
             evaluation_id = c.lastrowid
 
             # Process individual responses
             for i, response_xml in responses:
                 response_data = extract_response_data(response_xml)
                 values = (evaluation_id, i) + response_data
-                c.execute('INSERT INTO response_eval (evaluation_id, response_number, relevance, coherence, completeness, factuality, reasoning, adaptability, creativity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', values)
+                c.execute('INSERT INTO response_eval (evaluation_id, response_number, relevance, coherence, completeness, factuality, reasoning, adaptability, creativity, emergence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values)
 
     conn.commit()
     conn.close()
 
 def extract_data(xml_string):
     data = []
-    for tag in ['goal_completion', 'coherence', 'learning', 'insight', 'creativity', 'relevance', 'completeness', 'factuality', 'reasoning', 'adaptability']:
+    for tag in ['goal_completion', 'coherence', 'learning', 'insight', 'creativity', 'emergence', 'relevance', 'completeness', 'factuality', 'reasoning', 'adaptability']:
         match = re.search(rf'<{tag}>(\d+)</{tag}>', xml_string)
         if match:
             data.append(int(match.group(1)))

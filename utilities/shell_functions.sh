@@ -243,61 +243,69 @@ get_label_probability() {
 
 
 
-
-
-llmc() {
-    local continue_conversation=false
-    local prompt_key=""
-    local other_args=()
-
-    # Parse arguments
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-            -c|--continue)
-                continue_conversation=true
-                shift
-                ;;
-            -p|--prompt)
-                prompt_key="$2"
-                shift 2
-                ;;
-            *)
-                other_args+=("$1")
-                shift
-                ;;
-        esac
-    done
-
-    # Prepare the command
-    local cmd=("llm")
-    [[ -n "$prompt_key" ]] && cmd+=("$prompt_key")
-    [[ ${#other_args[@]} -gt 0 ]] && cmd+=("${other_args[@]}")
-
-    if $continue_conversation; then
-        if [[ -n "$CONVERSATION_ID" ]]; then
-            echo "Using conversation_id: $CONVERSATION_ID"
-            cmd+=("--cid" "$CONVERSATION_ID")
-        else
-            echo "No active conversation. Starting a new one."
-        fi
-    fi
-
-    # Execute the llm command
-    "${cmd[@]}"
-
-    # If not continuing a conversation, update the CONVERSATION_ID
-    if ! $continue_conversation && [[ -n "$prompt_key" ]]; then
-        db_query="SELECT conversation_id FROM responses WHERE prompt LIKE '%$prompt_key%' ORDER BY id DESC LIMIT 1"
-        conversation_id=$(sqlite3 /home/ShellLM/.config/io.datasette.llm/logs.db "$db_query")
-        if [[ -n "$conversation_id" ]]; then
-            export CONVERSATION_ID="$conversation_id"
-            echo "New conversation_id set: $CONVERSATION_ID"
-        else
-            echo "No conversation_id found for prompt: $prompt_key"
-        fi
-    fi
+llmc () {
+	local continue_conversation=false
+	local prompt_key=""
+	local other_args=()
+	
+	# Parsing command line arguments
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+			-c|--continue)
+				continue_conversation=true
+				echo "Continue conversation: $continue_conversation"
+				shift
+				;;
+			-p|--prompt)
+				prompt_key="$2"
+				shift 2
+				;;
+			*)
+				other_args+=("$1")
+				shift
+				;;
+		esac
+	done
+	
+	local cmd=("llm")
+	[[ -n "$prompt_key" ]] && cmd+=("$prompt_key")
+	[[ ${#other_args[@]} -gt 0 ]] && cmd+=("${other_args[@]}")
+	
+	if $continue_conversation; then
+		if [[ -n "$CONVERSATION_ID" ]]; then
+			echo "Using conversation_id: $CONVERSATION_ID"
+			cmd+=("--cid" "$CONVERSATION_ID")
+		else
+			echo "No active conversation. Starting a new one."
+		fi
+	fi
+	
+	# Execute the llm command
+	"${cmd[@]}"
+	
+	if ! $continue_conversation && [[ -n "$prompt_key" ]]; then
+		local db_path="/home/ShellLM/.config/io.datasette.llm/logs.db"
+		local db_query="SELECT conversation_id FROM responses WHERE prompt LIKE '%$prompt_key%' ORDER BY id DESC LIMIT 1"
+		
+		# Fetch the conversation ID from the database
+		local conversation_id
+		conversation_id=$(sqlite3 "$db_path" "$db_query" 2>&1)
+		
+		if [[ $? -eq 0 ]]; then
+			echo "conversation_id: $conversation_id"
+			if [[ -n "$conversation_id" ]]; then
+				export CONVERSATION_ID="$conversation_id"
+				echo "New conversation_id set: $CONVERSATION_ID"
+			else
+				echo "No conversation_id found for prompt: $prompt_key"
+			fi
+		else
+			echo "Database query failed: $conversation_id"
+		fi
+	else
+		echo "No prompt key provided. Exiting."
+	fi
 }
-
 
 md() {
     if [ -z "$1" ] # checks if $1 is empty
@@ -603,7 +611,17 @@ help2 () {
 
 shelp () {
     # Use llm to generate help for a command.
+    # TODO: Create multi-model TUI. 
+    # - Present the answers from four models in a list. 
+    # - User picks one or a None option. 
+    # The choice is sent to terminal input prompt. 
+    # A 'None' choice Will exit the TUI.
+    # User choices will be recorded somewhere, so that we can evaluate models responses.
+    # Something like user_question:model_choice
+    local models=(openrouter/openai/gpt-4o,openrouter/openai/gpt-4o-mini,claude-3.5-sonnet,claude-3-haiku)
     local model="openrouter/openai/gpt-4o"
+    local system="do not use markdown blocks. Write the answer like this <command>command text</command>."
+    local response=""
     while [[ "$#" -gt 0 ]]; do
         case $1 in
             -m|--model)
@@ -621,8 +639,8 @@ shelp () {
       shift 2
       print -z $(llm -c "$cmd" "${@:2}")
     else
-      response="$(llm -m $model -t shellhelp "$cmd" "${@:2}")" #  -o temperature 0 not supported in claude-3
-      
+      response="$(llm -m $model -s "$system" "$cmd" "${@:2}")"
+      response="$(echo "$response" | awk 'BEGIN{RS="<command>"} NR==2' | awk 'BEGIN{RS="</command>"} NR==1')"
       print -z "$response"
     fi
 }
